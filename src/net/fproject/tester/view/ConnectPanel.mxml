@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+-->
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 height="282"
+		 title="Gateways" 
+		 styleName="lightTitle" 
+		 width="638" 
+		 horizontalCenter="0" 
+		 top="141"
+		 creationComplete="init()">
+	
+	<mx:List x="10" y="10" id="profileList" width="162" height="195" 
+			 dataProvider="{controller.profiles}" 
+			 itemClick="onProfileSelect(event)">
+		<mx:itemRenderer>
+			<fx:Component>
+				<mx:Label text="{data.name}"/>
+			</fx:Component>
+		</mx:itemRenderer>
+	</mx:List>
+	<s:Button x="10" y="210" width="50" icon="@Embed(source='assets/add.png')" fontWeight="bold" click="onAddClick(event)"/>
+	<s:Button x="65" y="210" width="50" icon="@Embed(source='assets/delete.png')" fontWeight="bold" click="onDeleteClick(event)" enabled="{profileList.selectedIndex >= 0 }"/>
+	<s:Button x="120" y="210" width="50" icon="@Embed(source='assets/loadsetting.png')" 
+			   toolTip="Load profile from file..."
+			   fontWeight="bold" click="onLoadSettingClick(event)"/>
+	
+	<mx:Canvas id="formCanvas" x="180" y="10" enabled="{selectedProfile!=null}" width="404">
+		<s:TextInput x="85" y="0" id="nameText" text="@{selectedProfile.name}"/>
+		<s:TextInput x="85" y="41" width="309" id="urlText" text="@{selectedProfile.url}"/>
+		<s:TextInput x="85" y="108" id="userText" 
+					  text="@{selectedProfile.user}"
+					  enabled="{useCredentialCheckBox.selected}"/>
+		<!--<s:TextInput x="85" y="125" visible="false"  id="destText" 
+		change="selectedProfile.serviceDest = destText.text;" text="{selectedProfile.serviceDest}"/>-->
+		<s:TextInput x="85" y="138" id="passwordText" 
+					  text="@{selectedProfile.password}" 
+					  displayAsPassword="true"
+					  enabled="{useCredentialCheckBox.selected}"/>
+		<mx:Label x="5" y="5" text="Name" fontWeight="bold"/>
+		<mx:Label x="5" y="45" text="URL" fontWeight="bold"/>
+		
+		<s:CheckBox id="useCredentialCheckBox" label="Use Credentials" x="5" y="85" fontWeight="bold"
+					selected="@{selectedProfile.useCredentials}"/>
+		
+		<mx:Label x="15" y="110" text="Username" enabled="{useCredentialCheckBox.selected}"/>
+		<mx:Label x="15" y="140" text="Password" enabled="{useCredentialCheckBox.selected}"/>
+		<!--<mx:Label x="10" y="159" visible="false" text="Destination"/>-->
+		<s:Button x="238" y="190" label="Use" click="onConnectClick(event)" enabled="{profileList.selectedIndex >= 0 }" 
+				  icon="@Embed(source='assets/connect.png')"/>
+	</mx:Canvas>
+	<s:Button x="530" y="200" label="Quit" icon="@Embed(source='assets/stop.png')" click="onQuitClick(event)"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.ListEvent;
+			
+			import net.fproject.tester.controller.ConnectController;
+			import net.fproject.tester.controller.EventHub;
+			import net.fproject.tester.events.StatusChangeEvent;
+			import net.fproject.tester.model.Profile;
+			
+			[Bindable]
+			private var controller:ConnectController;
+			[Bindable]
+			private var selectedProfile:Profile;
+			
+			private var urlRegex:RegExp = /(((http|https):\/\/)([-a-z0-9]*\.+)?[a-zA-Z0-9\.])([\/&\?=\.;%\+\$@~][\S]*)?/i;
+			
+			private function init():void
+			{
+				controller = ConnectController.getInstance();
+			}
+			
+			private function onAddClick( event:MouseEvent ):void
+			{
+				controller.addProfile();
+				profileList.selectedIndex = controller.profiles.length-1;
+				onProfileSelect(null);
+			}
+			
+			private function onDeleteClick( event:MouseEvent ):void
+			{
+				if( profileList.selectedIndex >= 0 )
+					controller.deleteProfile( profileList.selectedIndex );
+			}
+			
+			private function onLoadSettingClick( event:MouseEvent ):void
+			{
+				var file:File = new File();
+				file.addEventListener(Event.SELECT, onSettingFileSelect);
+				file.browseForOpen("Please select a file...");
+			}
+			
+			private function onSettingFileSelect(evt:Event):void {
+				var file:File = File(evt.currentTarget);
+				controller.loadProfiles(file);					
+			}
+			
+			private function onProfileSelect( event:ListEvent ):void
+			{
+				selectedProfile = Profile(profileList.selectedItem);
+			}
+			
+			private function onConnectClick( event:MouseEvent ):void
+			{
+				controller.saveProfiles();
+				var p:Profile = Profile(profileList.selectedItem);
+				
+				if(urlRegex.test(p.url) )
+					controller.connect( Profile( profileList.selectedItem ) );
+				else 
+					Alert.show("You did not enter a valid URL, cannot connect", "Error");
+			}
+			
+			private function onQuitClick( event:MouseEvent):void
+			{
+				EventHub.getInstance().dispatchEvent( new StatusChangeEvent( StatusChangeEvent.QUIT ) );
+			}			
+		]]>
+	</fx:Script>
+</s:Panel>

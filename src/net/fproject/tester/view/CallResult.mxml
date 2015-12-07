@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+-->
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark"
+					xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:states>
+		<s:State name="tree"/>
+		<s:State name="json"/>
+		<s:State name="debug"/>
+	</s:states>
+	<s:layout><s:VerticalLayout/></s:layout>
+	<s:Group width="100%" height="30">
+		<s:BorderContainer cornerRadius="8" left="0">
+			<s:layout><s:HorizontalLayout verticalAlign="middle" paddingLeft="5" paddingRight="5"/></s:layout>
+			<s:RadioButton label="Tree" groupName="outputSelect" selected="true" click="toggleOutput('tree')"/>
+			<s:RadioButton label="JSON" groupName="outputSelect"  selected="false" click="toggleOutput('text')"/>
+			<s:RadioButton label="Debug" groupName="outputSelect"  selected="false" click="toggleOutput('info')"/>
+		</s:BorderContainer>
+		<s:Button id="closeThisTabButton" top="-5" right="4" icon="@Embed(source='assets/close.png')" 
+				  width="20" height="20" toolTip="Close this tab" click="closeThisTabButton_clickHandler(event)"/>
+	</s:Group>
+	
+	<mx:Tree dataProvider="{DataUtil.getResultTree(resultData)}" 
+			 id="treeOutput" includeIn="tree" horizontalScrollPolicy="auto"
+			 width="100%" height="100%" borderVisible="false"/>
+	<s:TextArea id="textOutput" width="100%" height="100%" includeIn="json"
+				text="{DataUtil.getResultJSON(resultData)}"
+				borderVisible="false"/>	
+	<s:TextArea id="debugOutput" width="100%" height="100%" includeIn="debug"
+				text="{ObjectUtil.toString(resultInfo)}"
+				borderVisible="false"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.utils.ObjectUtil;
+			
+			import net.fproject.tester.util.DataUtil;
+			
+			[Bindable]
+			public var resultData:Object
+			
+			[Bindable]
+			private var resultInfo:Event;
+			
+			[Bindable]
+			private var resultXML:XMLList;
+			
+			public function setData(obj:Object, ev:Event):void
+			{
+				resultData = obj;
+				resultInfo = ev;
+			}
+			
+			private function toggleOutput(t:String):void
+			{
+				if( t == 'tree' )
+				{
+					this.currentState = "tree"
+				} 
+				else if(t == 'text') {
+					this.currentState = "json"
+				} 
+				else 
+				{
+					this.currentState = "debug"
+				}
+			}
+			
+			protected function closeThisTabButton_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new Event("closeThisTab"));
+			}
+			
+		]]>
+	</fx:Script>
+</s:NavigatorContent>

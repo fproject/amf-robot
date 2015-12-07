@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+-->
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 minWidth="800" minHeight="350" creationComplete="init()"
+		 title="Calls" >
+	<s:layout><s:VerticalLayout/></s:layout>
+	<s:HGroup width="100%" height="100%">
+		<s:VGroup minWidth="400" id="inputParamsPanel" gap="5" paddingLeft="6">
+			<s:FormItem label="Service" width="100%" height="22">
+				<s:ComboBox id="serviceSelect" width="100%" change="onServiceClick(event)"
+							dataProvider="{serviceInfo.activeProfile.services}" labelField="name"
+							prompt="Select a service">
+				</s:ComboBox>
+			</s:FormItem>			
+			<s:FormItem label="Method" width="100%" height="31">
+				<s:ComboBox id="methodSelect" width="100%" change="onMethodClick(event)"
+							dataProvider="{activeService.methods}" enabled="{activeService!=null}"
+							labelField="name" prompt="Select a method">
+				</s:ComboBox>
+				
+			</s:FormItem>
+			
+			<mx:DataGrid id="argumentsGrid" width="100%" height="100%"
+						 dataProvider="{callMethod.arguments}" editable="true">
+				<mx:columns>
+					<mx:DataGridColumn dataField="name" editable="false" headerText="Argument"/>
+					<mx:DataGridColumn dataField="value" editable="true" headerText="Value *"/>
+					<mx:DataGridColumn width="80" dataField="type" editable="true"
+									   editorDataField="selectedItem" headerText="Type">
+						<mx:itemEditor>
+							<fx:Component>
+								<mx:ComboBox dataProvider="{RArgument.allTypes}">
+									<fx:Script>
+										<![CDATA[
+											import net.fproject.tester.model.RArgument;
+										]]>
+									</fx:Script>
+								</mx:ComboBox>
+							</fx:Component>
+						</mx:itemEditor>
+					</mx:DataGridColumn>
+				</mx:columns>
+			</mx:DataGrid>
+			<s:Label text="* You can use JSON notation to send Objects"/>
+			<s:Label text="* Use 'YYYY-MM-DD hh:nn:ss' for DateTime format"/>
+			<s:Button label="Place AMF call" click="onCallClick(event)"
+					  enabled="{methodSelect.selectedIndex&gt;=0}"/>
+		</s:VGroup>
+		<s:VGroup height="100%" width="100%" paddingTop="8" paddingRight="6">
+			<mx:TabNavigator id="outputTabs" width="100%" height="100%" 
+							 paddingLeft="2" paddingRight="2" paddingBottom="2"
+							 change="onOutputTabsChange(event)">
+			</mx:TabNavigator>
+			<s:HGroup width="100%" layoutDirection="rtl" verticalAlign="middle"
+					  paddingRight="20" paddingBottom="8">
+				<s:Button visible="true" label="Save" right="20"
+						  icon="@Embed(source='assets/page_save.png')" iconPlacement="left"
+						  id="saveResultBtn" click="saveResultBtn_clickHandler(event)"
+						  toolTip="Save service call result to a JSON text file..."/>
+				<s:Button label="Clear" click="onClearClick(event)"
+						  icon="@Embed(source='assets/page_white_text.png')" iconPlacement="left"/>	
+				<s:Label id="lblStatus" visible="false" textAlign="right"
+						 text="Call succeed in ### milliseconds"/>
+			</s:HGroup>
+		</s:VGroup>
+		
+	</s:HGroup>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IVisualElement;
+			import net.fproject.tester.util.DataUtil;
+			import mx.events.FlexEvent;
+			import net.fproject.tester.events.LogEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ObjectUtil;
+			
+			import net.fproject.tester.business.Connector;
+			import net.fproject.tester.business.RResponder;
+			import net.fproject.tester.controller.EventHub;
+			import net.fproject.tester.events.StatusChangeEvent;
+			import net.fproject.tester.model.RMethod;
+			import net.fproject.tester.model.RService;
+			import net.fproject.tester.model.ServiceInfo;
+			
+			[Bindable]
+			public var activeService:RService;
+			[Bindable]
+			public var activeMethod:RMethod;
+			[Bindable]
+			private var serviceInfo:ServiceInfo = ServiceInfo.getInstance();
+			
+			[Bindable]
+			private var callMethod:RMethod;
+			
+			private var connector:Connector = Connector.getInstance();
+			private var eventHub:EventHub = EventHub.getInstance();
+			
+			private var logger:Logger;
+			
+			private function init():void
+			{
+				logger = new Logger;
+				outputTabs.addChild(logger);
+				eventHub.addEventListener(StatusChangeEvent.DISCONNECTED, onDisconnect);
+				eventHub.addEventListener(StatusChangeEvent.RESET, onReset);	
+				eventHub.addEventListener(LogEvent.LOG, onLogging);	
+			}
+			
+			private function onReset(event:StatusChangeEvent):void
+			{
+				activeMethod = null;
+				activeService = null;
+			}
+			
+			private function onDisconnect(event:StatusChangeEvent):void
+			{
+				removeAllResults();
+				activeService = null;
+				activeMethod = null;
+				callMethod = null;	
+			}
+			
+			private function onLogging(event:LogEvent):void
+			{
+				logger.append(event.message);
+			}
+			
+			private function onServiceClick(event:Event):void
+			{
+				if(serviceSelect.selectedIndex >= 0)
+					activeService = RService(serviceInfo.activeProfile.services.getItemAt(serviceSelect.selectedIndex));
+			}
+			
+			private function onMethodClick(event:Event):void
+			{
+				if(methodSelect.selectedIndex < 0)
+				{
+					return;
+				}
+				activeMethod = RMethod(activeService.methods.getItemAt(methodSelect.selectedIndex));
+				callMethod = RMethod(ObjectUtil.copy(activeMethod));
+			}
+			private var _callTimeTracker:Number;
+			private function onCallClick(event:MouseEvent):void
+			{
+				_callTimeTracker = (new Date()).time;
+				if(activeService != null && callMethod != null)
+				{
+					var r:RResponder = new RResponder(onSuccess, onFailure);
+					connector.call(activeService, callMethod, r);
+				}
+			}
+			private var _respondTimes:Object = {};
+			
+			private var callResult:CallResult;
+			
+			public function onSuccess(event:ResultEvent):void
+			{
+				var timeEndTracker:Number = (new Date()).time;				
+				displayCallResult(event.result, event);
+				
+				lblStatus.text = "Call finished in "+(timeEndTracker - _callTimeTracker) +" milliseconds";
+				_respondTimes[callResult.uid] = timeEndTracker - _callTimeTracker;
+			}
+			
+			public function onFailure(event:FaultEvent):void
+			{
+				displayCallResult(event.fault, event);
+				lblStatus.text = "Call failed";
+			}
+			
+			private function displayCallResult(o:Object, e:Event):void
+			{
+				callResult = new CallResult();
+				callResult.setData(o, e);
+				if(outputTabs.getChildren().length > 10)
+					outputTabs.removeChildAt(0);
+				callResult.addEventListener(FlexEvent.CREATION_COMPLETE,
+					function(evt:Event):void
+					{
+						CallResult(evt.target).label = e.currentTarget.service.source + "." + e.currentTarget.name;
+						outputTabs.selectedIndex = outputTabs.numChildren - 1;
+					});
+				callResult.addEventListener("closeThisTab",
+					function(evt:Event):void
+					{
+						outputTabs.removeElement(IVisualElement(evt.target));
+					});
+				outputTabs.addChild(callResult);
+				lblStatus.visible = true;
+			}
+			private function onClearClick(event:MouseEvent):void
+			{
+				removeAllResults();
+				_respondTimes = {};
+			}
+			
+			private function removeAllResults():void
+			{
+				while (outputTabs.numChildren > 1)
+				{
+					outputTabs.removeChildAt(outputTabs.numChildren - 1);
+				}
+			}
+			
+			protected function onOutputTabsChange(event:IndexChangedEvent):void
+			{
+				if(event.newIndex == 0)
+				{
+					lblStatus.text = null;
+				}
+				else
+				{
+					callResult = outputTabs.getChildAt(event.newIndex) as CallResult;
+					lblStatus.text = "Call finished in "+_respondTimes[callResult.uid]+" milliseconds";
+				}				
+			}
+			
+			protected function saveResultBtn_clickHandler(event:MouseEvent):void
+			{
+				if(callResult != null)
+				{
+					var file:File = new File();
+					file.save(DataUtil.getResultJSON(callResult.resultData),callResult.label + ".json");
+				}
+			}
+			
+		]]>
+	</fx:Script>
+</s:Panel>

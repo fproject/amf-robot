@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   width="600" height="500"
+			   close="onClose(event)"
+			   title="XDebug Setting"
+			   added="window_showHandler(event)" xmlns:ns="library://ns.adobe.com/flashx/textLayout">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			import net.fproject.tester.model.Profile;
+			import net.fproject.tester.model.ServiceInfo;
+			import net.fproject.tester.util.DataUtil;
+			
+			protected function onClose(event:Event):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			protected function onSubmit(event:Event):void
+			{
+				PopUpManager.removePopUp(this);
+				var profile:Profile = ServiceInfo.getInstance().activeProfile;
+				if(profile != null)
+					profile.xdebugSessionId = xdebugSessionId;
+				ServiceInfo.getInstance().dataChanged();
+			}
+			
+			[Bindable]
+			private var xdebugSessionId:String;
+			
+			[Bindable]
+			private var serverHost:String;
+			
+			protected function useXDebug_changeHandler(event:Event):void
+			{
+				if(!useXDebugField.selected)
+					useXDebugField.callLater(function():void{sessionIdField.text = null});
+			}
+			
+			protected function window_showHandler(event:Event):void
+			{
+				if(event.target === this)
+				{
+					var profile:Profile = ServiceInfo.getInstance().activeProfile;
+					if(profile != null)
+					{
+						xdebugSessionId = profile.xdebugSessionId;
+						if(sessionIdField)
+							sessionIdField.text = xdebugSessionId;
+						if(useXDebugField)
+							useXDebugField.selected = !DataUtil.isBlank(xdebugSessionId);
+						var s:String = profile.url;
+						if(s)
+						{
+							var i:int = s.indexOf("://");
+							if(i != -1)
+								s = s.substr(i + 3);
+							i = s.lastIndexOf("?");
+							if(i != -1)
+								s = s.substring(0, i);
+							if(i > 0 && s.charAt(i-1) == "/")
+								s = s.substring(0, i - 1);
+						}
+						serverHost = s;
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Form left="0" right="0">
+		<s:FormItem>
+			<s:CheckBox id="useXDebugField"
+						label="Use XDebug" selected="{!DataUtil.isBlank(xdebugSessionId)}"
+						change="useXDebug_changeHandler(event)"/>
+		</s:FormItem>
+		<s:FormItem label="Ide Key(Session ID):" width="100%">
+			<s:TextInput id="sessionIdField" width="100%" text="@{xdebugSessionId}"/>
+		</s:FormItem>
+		<s:FormItem label="Server Host:">
+			<s:TextInput id="serverHostField" text="{serverHost}" width="100%" editable="false"/>
+		</s:FormItem>
+		<s:RichText width="100%" paddingLeft="15" paddingRight="15" lineHeight="25">
+			<s:span fontWeight="bold">Follow this instructions to config XDebug for PHPStorm:</s:span>
+			<ns:list>
+				<ns:li>1. Open menu <ns:span fontStyle="italic">Run &#8212; Edit Configuration</ns:span></ns:li>
+				<ns:li>2. In the <ns:span fontStyle="italic">Run/Debug Configuration</ns:span> window, add a new
+					<ns:span fontStyle="italic">PHP Remote Debug</ns:span> configuration</ns:li>
+				<ns:li>3. In <ns:span fontStyle="italic">Servers</ns:span> section, click to the "..." button to open 
+					<ns:span fontStyle="italic">Servers</ns:span> configuration window.
+				In that window let's config a new server using the host displayed above. Remember to choose XDebug option.</ns:li>
+				<ns:li>4. Back to <ns:span fontStyle="italic">Run/Debug Configuration</ns:span> window, in the
+					<ns:span fontStyle="italic">Ide key (session id)</ns:span> section, paste the value that you entered above</ns:li>
+				<ns:li>5. Open menu <ns:span fontStyle="italic">Run &#8212; Debug</ns:span> and choose your newly created configuration.</ns:li>
+				<ns:li>6. Done. Now you can use F-Project Tester to test any remote service method.</ns:li>
+			</ns:list>
+		</s:RichText>
+	</s:Form>
+	<s:Button right="120" bottom="25" label="OK" icon="@Embed(source='assets/accept.png')" 
+			  id="okBtn" click="onSubmit(event)"/>
+	<s:Button right="30" bottom="25" label="Cancel" icon="@Embed(source='assets/cancel.png')" 
+			  id="cancelBtn" click="onClose(event)"/>
+</s:TitleWindow>

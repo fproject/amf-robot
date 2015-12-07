@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:view="net.fproject.tester.view.*" 
+					   creationComplete="init()" 
+					   currentState="Connect" minHeight="750" minWidth="920">
+	
+	<fx:Style source="style.css"/>
+	<s:states>
+		<s:State name="Normal"/>
+		<s:State name="Connect"/>
+		<s:State name="OutputMax"/>
+	</s:states>
+	
+	<s:BorderContainer id="appControlbar" height="50" left="10" top="10" right="10"
+					   visible.Connect="false">
+		<s:layout><s:HorizontalLayout verticalAlign="middle" paddingLeft="10"/></s:layout>
+		<s:Button label="Quit" iconPlacement="top" icon="@Embed(source='assets/stop.png')" 
+				  click="onQuitClick(event)" toolTip="Quit AMF Tester"/>
+		<s:Button label="Endpoints" icon="@Embed(source='assets/connect.png')" 
+				  iconPlacement="top" click="onConnectClick(event)" toolTip="Open AMF Endpoint Configuration"/>
+		<mx:VRule width="2" height="35"/>
+		<s:Button label="Hide Sevice Info"
+				  label.OutputMax="Show Sevice Info"
+				  iconPlacement="top" 
+				  click="toggleServiceInfo()" id="toggleServiceInfoBtn"
+				  icon="@Embed(source='assets/bullet_arrow_up.png')" 
+				  icon.OutputMax="@Embed(source='assets/bullet_arrow_down.png')" />
+		<mx:VRule width="2" height="35"/>
+		<s:Button label="Save Profile" iconPlacement="top" icon="@Embed(source='assets/savesetting.png')" 
+				  click="saveProfile_clickHandler(event)" id="saveProfile"/>
+		<mx:VRule width="2" height="35"/>
+		<s:Button label="XDebug" iconPlacement="top" icon="@Embed(source='assets/xdebug.png')"
+				  toolTip="XDebug Setting and Guideline"
+				  id="xdebugSetting" click="xdebugSetting_clickHandler(event)"/>
+	</s:BorderContainer>
+	
+	<s:Label text="F-Project Tester version " x="700" y="30" color="#0026FF" fontSize="18" id="versionLabel"/>
+	
+	<view:ServicesPanel left="10" top="73" styleName="lightTitle" id="serviceInfoLabel" 
+						minWidth="817" minHeight="273" title="Services and Methods" 
+						visible.Connect="false" visible.OutputMax="false"
+						right="10" height="273"/>
+	
+	<view:CallPanel id="callPanel" bottom="10" right="10" left="10" top="354"
+					top.OutputMax="73"
+					visible.Connect="false"/>
+	
+	<view:ConnectPanel id="connectPanel" includeIn="Connect"/>
+	
+	<s:transitions>
+		<s:Transition id="myTransition" fromState="Normal" toState="OutputMax">
+			<s:Parallel target="{callPanel}">
+				<s:Move duration="400"/>
+				<s:Resize duration="400"/>
+			</s:Parallel>
+		</s:Transition>
+		<s:Transition id="second" fromState="OutputMax" toState="Normal">
+			<s:Parallel target="{callPanel}">
+				<s:Move duration="400"/>
+				<s:Resize duration="400"/>
+			</s:Parallel>
+		</s:Transition>
+	</s:transitions>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+			
+			import air.update.ApplicationUpdaterUI;
+			import air.update.events.UpdateEvent;
+			
+			import net.fproject.tester.controller.ConnectController;
+			import net.fproject.tester.controller.EventHub;
+			import net.fproject.tester.events.StatusChangeEvent;
+			import net.fproject.tester.model.RMethod;
+			import net.fproject.tester.model.ServiceInfo;
+			import net.fproject.tester.view.XDebugSettingWindow;
+			
+			[Bindable]
+			private var serviceInfo:ServiceInfo;
+			private var eventHub:EventHub;
+			
+			[Bindable]
+			private var selectedMethod:RMethod;
+			private var appUpdater:ApplicationUpdaterUI = new ApplicationUpdaterUI();
+			
+			
+			public function init():void
+			{
+				serviceInfo = ServiceInfo.getInstance();
+				eventHub = EventHub.getInstance();
+				setApplicationVersion();
+				
+				eventHub.addEventListener(StatusChangeEvent.CONNECTED, onConnect);
+				eventHub.addEventListener(StatusChangeEvent.QUIT, onQuit);
+				
+				checkForUpdate();
+			}
+			
+			private function checkForUpdate():void {
+				setApplicationVersion(); // Find the current version so we can show it below
+				appUpdater.updateURL = "http://fproject.net/amf-tester/update.xml"; // Server-side XML file describing update
+				appUpdater.isCheckForUpdateVisible = false; // We won't ask permission to check for an update
+				appUpdater.addEventListener(UpdateEvent.INITIALIZED, onUpdate); // Once initialized, run onUpdate
+				appUpdater.addEventListener(ErrorEvent.ERROR, onError); // If something goes wrong, run onError
+				appUpdater.initialize(); // Initialize the update framework
+			}
+			
+			private function onError(event:ErrorEvent):void {
+				Alert.show(event.toString());
+			}
+			
+			private function onUpdate(event:UpdateEvent):void {
+				appUpdater.checkNow(); // Go check for an update now
+			}
+			
+			// Find the current version for our Label below
+			private function setApplicationVersion():void {
+				var appXML:XML = NativeApplication.nativeApplication.applicationDescriptor;
+				var ns:Namespace = appXML.namespace();
+				versionLabel.text = "F-Project Tester " + appXML.ns::versionNumber;
+			}
+			
+			private function onQuit(event:StatusChangeEvent):void
+			{
+				nativeApplication.exit();
+			}
+			
+			private function onConnect(event:StatusChangeEvent):void
+			{
+				this.currentState = null;
+			}
+			
+			private function onQuitClick(event:MouseEvent):void
+			{
+				eventHub.dispatchEvent(new StatusChangeEvent(StatusChangeEvent.QUIT));
+			}
+			
+			private function onConnectClick(event:MouseEvent):void
+			{
+				eventHub.dispatchEvent(new StatusChangeEvent(StatusChangeEvent.DISCONNECTED));
+				this.currentState = 'Connect';
+			}
+			
+			private function toggleServiceInfo():void
+			{
+				if(currentState != 'OutputMax')
+				{
+					currentState = 'OutputMax' ;
+				} else {
+					currentState = 'Normal';
+				}
+			}
+			
+			protected function saveProfile_clickHandler(event:MouseEvent):void
+			{
+				var file:File = new File();
+				var ba:ByteArray = new ByteArray();
+				ba.writeObject(ConnectController.getInstance().profiles);
+				file.save(ba,"fprj-tester.obj");
+			}
+			
+			private var xdebugSettingWindow:XDebugSettingWindow;
+			
+			protected function xdebugSetting_clickHandler(event:MouseEvent):void
+			{
+				if(xdebugSettingWindow == null)
+					xdebugSettingWindow = new XDebugSettingWindow;
+				PopUpManager.addPopUp(xdebugSettingWindow, this);
+				PopUpManager.centerPopUp(xdebugSettingWindow);
+			}
+			
+		]]>
+	</fx:Script>
+</s:WindowedApplication>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services-config>
+    <services>
+        <service id="amf-tester-service" class="flex.messaging.services.RemotingService" messageTypes="flex.messaging.messages.RemotingMessage">
+            <destination id="amf-tester-dst">
+                <channels>
+                    <channel ref="my-remote"/>
+                </channels>
+                <properties>
+                    <source>*</source>
+                </properties>
+            </destination>
+        </service>
+    </services>
+    <channels>
+        <channel-definition id="my-remote" class="mx.messaging.channels.AMFChannel">
+            <endpoint uri="http://test.f-project.net" class="flex.messaging.endpoints.AMFEndpoint"/>
+        </channel-definition>
+    </channels>
+</services-config>

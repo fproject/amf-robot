@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+-->
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				width="400" height="360"
+				title="Discover services"
+				close="onClose(event)">
+	<s:RadioButton x="10" y="114" label="amfphp" groupName="discoveryTypeGroup" selected="true"/>
+	<s:Label x="10" y="92" text="Select the discovery service type:"/>
+	
+	<s:Label x="10" y="156" text="Discovery Service name:"/>
+	<s:TextInput x="10" y="182" text="AmfDiscoveryService" id="discoveryServiceName" width="360"/>
+	
+	<s:Label x="10" y="212" text="Method name:"/>
+	<s:TextInput x="10" y="238" text="discover" id="discoveryMethodName" width="360"/>
+	
+	<s:Button x="289" y="284" label="Cancel" icon="@Embed(source='assets/cancel.png')" 
+			   id="cancelBtn" click="onClose(event)"/>
+	<s:Button x="187" y="284" label="Discover" icon="@Embed(source='assets/accept.png')" 
+			   id="okBtn" click="discoverClick(event)"/>
+	<s:Label x="10" y="10" width="360" 
+			 text="Some AMF services, like amfphp, provide a discovery sercices 
+			 that returns a list of services and methods. You can use this service
+			 to fill the services and methods definitions in AMFDebugger."/>
+	
+	<fx:Script>
+		<![CDATA[
+			import net.fproject.tester.business.Connector;
+			import mx.managers.PopUpManager;
+			
+			private var con:Connector = Connector.getInstance();
+			
+			private function onClose(event:Event ):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function discoverClick(event:MouseEvent):void
+			{
+				con.discover(Connector.FMT_AMFPHP, discoveryServiceName.text, discoveryMethodName.text);
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+	
+</s:TitleWindow>
