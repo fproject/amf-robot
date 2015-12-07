@@ -1,5 +1,5 @@
 # F-Project Tester
-A tool based on from dunamis/pinta with many new features for testing AMF Server and RESTful Webservices
+A tool based on [dunamis/pinta] with many new features for testing AMF Server and RESTful Webservices
 
 ## Installation
 
