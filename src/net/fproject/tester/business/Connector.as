@@ -146,7 +146,8 @@ package net.fproject.tester.business
 		
 		private function onServicesFault( event:FaultEvent ):void
 		{
-			Alert.show("Unable to do services discovery, invalid service URL or server response", "Error");
+			eventHub.dispatchEvent(new LogEvent(LogEvent.LOG, 
+				"[ERROR]Unable to do services discovery, invalid service URL or server response:\r\n" + event.fault.message));
 		}
 	}
 }

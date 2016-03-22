@@ -214,7 +214,10 @@ limitations under the License.
 			}
 			private function onClearClick(event:MouseEvent):void
 			{
-				removeAllResults();
+				if(outputTabs.numChildren > 1)
+					removeAllResults();
+				else
+					logger.clear();
 				_respondTimes = {};
 			}
 			
