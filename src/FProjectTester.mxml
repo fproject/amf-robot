@@ -75,7 +75,7 @@
 			import net.fproject.tester.controller.ConnectController;
 			import net.fproject.tester.controller.EventHub;
 			import net.fproject.tester.events.StatusChangeEvent;
-			import net.fproject.tester.model.RMethod;
+			import net.fproject.tester.model.ReflectionMethod;
 			import net.fproject.tester.model.ServiceInfo;
 			import net.fproject.tester.view.XDebugSettingWindow;
 			
@@ -84,7 +84,7 @@
 			private var eventHub:EventHub;
 			
 			[Bindable]
-			private var selectedMethod:RMethod;
+			private var selectedMethod:ReflectionMethod;
 			private var appUpdater:ApplicationUpdaterUI = new ApplicationUpdaterUI();
 			
 			

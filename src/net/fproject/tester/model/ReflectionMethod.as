@@ -16,34 +16,30 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.controller
+package net.fproject.tester.model
 {
-	import flash.events.EventDispatcher;
+	import mx.collections.ArrayCollection;
 	
-	public class EventHub extends EventDispatcher
+	[RemoteClass(alias="RMethod")]
+	public class ReflectionMethod extends ReflectionAbstract
 	{
-		private static var _allowInstance:Boolean = false;
-		private static var _instance:EventHub;
+		[Bindable]
+		public var arguments:ArrayCollection;
 		
-		public function EventHub()
+		public function ReflectionMethod( name:String='new', args:ArrayCollection=null)
 		{
-			if( !EventHub._allowInstance )
+			this.name = name;
+			this.arguments = args;
+			if( this.arguments == null )
 			{
-				throw new Error();
+				this.arguments = new ArrayCollection();
 			}
-			
-			EventHub._allowInstance = false;
 		}
 		
-		public static function getInstance():EventHub
+		public function toString():String
 		{
-			if( !EventHub._instance )
-			{
-				EventHub._allowInstance = true;
-				EventHub._instance = new EventHub();
-			}
-			
-			return EventHub._instance;
+			return name;	
 		}
+
 	}
 }

@@ -46,10 +46,10 @@ package net.fproject.tester.model
 			services = new ArrayCollection();
 		}
 		
-		public function getServiceByName( name:String ):RService
+		public function getServiceByName( name:String ):ReflectionService
 		{
 
-			for each( var s:RService in services )
+			for each( var s:ReflectionService in services )
 			{
 				if( s.name == name )
 				{

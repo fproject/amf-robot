@@ -16,34 +16,47 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.controller
+package net.fproject.tester.model
 {
-	import flash.events.EventDispatcher;
-	
-	public class EventHub extends EventDispatcher
+	import mx.collections.ArrayCollection;
+
+	[RemoteClass(alias="RService")]
+	public class ReflectionService extends ReflectionAbstract
 	{
-		private static var _allowInstance:Boolean = false;
-		private static var _instance:EventHub;
+		[Bindable]
+		public var methods:ArrayCollection;
 		
-		public function EventHub()
+		public function ReflectionService( n:String='new')
 		{
-			if( !EventHub._allowInstance )
-			{
-				throw new Error();
-			}
-			
-			EventHub._allowInstance = false;
+			name = n;
+			methods = new ArrayCollection();
 		}
 		
-		public static function getInstance():EventHub
+		public function getPackageName():String
 		{
-			if( !EventHub._instance )
-			{
-				EventHub._allowInstance = true;
-				EventHub._instance = new EventHub();
-			}
-			
-			return EventHub._instance;
+			var p:Array = name.split('.');
+			p.pop();
+			return p.join('.');	
 		}
+		
+		public function getServiceName():String
+		{
+			var p:Array = name.split('.');
+			return p.pop();	
+		}
+		
+		public function getAMFPackageName():String
+		{
+			var p:Array = name.split('.');
+			p.pop();
+			var pn:String = p.join('/');
+			if( pn == '' )
+			{
+				return '';
+			} else {
+				return pn+'/';
+			}
+		}
+
 	}
 }
