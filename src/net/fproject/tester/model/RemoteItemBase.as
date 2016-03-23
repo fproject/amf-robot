@@ -18,11 +18,30 @@
 ////////////////////////////////////////////////////////////////////////////////
 package net.fproject.tester.model
 {
-	public class RemoteItemBase
+	import net.fproject.core.PropertyChangeDispatcher;
+
+	public class RemoteItemBase extends PropertyChangeDispatcher
 	{
 		[Bindable]
 		public var name:String;
-		[Bindable]
-		public var doc:String;
+		
+		private var _doc:String;
+
+		[Bindable(event="propertyChange")]
+		public function get doc():String
+		{
+			return _doc;
+		}
+
+		public function set doc(value:String):void
+		{
+			if( _doc !== value)
+			{
+				var oldValue:String = _doc;
+				_doc = value;
+				dispatchChangeEvent("doc", oldValue, value);
+			}
+		}
+
 	}
 }

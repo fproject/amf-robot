@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="600" height="400"
+			   close="dialog_closeHandler(event)" title="ASDoc [ {method.name} ]">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import net.fproject.tester.model.RemoteMethod;
+			
+			[Bindable]
+			public var method:RemoteMethod;
+			
+			protected function dialog_closeHandler(event:CloseEvent):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			public static function show(method:RemoteMethod):ASDocDialog
+			{
+				var dlg:ASDocDialog = new ASDocDialog;
+				dlg.method = method;
+				PopUpManager.addPopUp(dlg, FlexGlobals.topLevelApplication as DisplayObject, true);
+				PopUpManager.centerPopUp(dlg);
+				return dlg;
+			}
+		]]>
+	</fx:Script>
+	<s:TextArea editable="false" top="0" left="0" right="0" bottom="0" id="asDocTextArea" text="{method.asDoc}" borderVisible="false"/>
+</s:TitleWindow>
