@@ -70,20 +70,20 @@ package net.fproject.tester.model
 						i = sp.indexOf("@param");
 						if(i > -1)
 						{
-							sp = StringUtil.trim(sp.substr(i + 6), " \t");
+							sp = StringUtil.trim(sp.substr(i + 6), " \t\r\n");
 							i = sp.indexOf("$");
 							if(i > -1)
 							{
-								p = {type:StringUtil.trim(sp.substr(0,i), " \t"),doc:""};
-								sp = StringUtil.trim(sp.substr(i + 1), " \t");
+								p = {type:StringUtil.trim(sp.substr(0,i), " \t\r\n"),doc:""};
+								sp = StringUtil.trim(sp.substr(i + 1), " \t\r\n");
 								i = sp.indexOf(" ");
 								if(i == -1)
 									i = sp.indexOf("\t");
 								if(i == -1)
 									i = sp.length;
-								p.name = StringUtil.trim(sp.substr(0, i), " \t");
+								p.name = StringUtil.trim(sp.substr(0, i), " \t\r\n");
 								if(i < sp.length - 1)
-									p.doc = StringUtil.trim(sp.substr(i + 1), " \t");
+									p.doc = StringUtil.trim(sp.substr(i + 1), " \t\r\n");
 								params[p.name] = p;
 							}
 						}
@@ -102,9 +102,9 @@ package net.fproject.tester.model
 			i = s.lastIndexOf("@return");
 			if(i > -1)
 			{
-				returnASDoc = StringUtil.trim(s.substr(i + 7), " \t");
+				returnASDoc = StringUtil.trim(s.substr(i + 7), " \t\r\n");
 				if(StringUtil.endsWith(returnASDoc, "*/"))
-					returnASDoc = StringUtil.trim(returnASDoc.substr(0, returnASDoc.length - 2), " \t");
+					returnASDoc = StringUtil.trim(returnASDoc.substr(0, returnASDoc.length - 2), " \t\r\n");
 			}
 		}
 		
@@ -153,7 +153,10 @@ package net.fproject.tester.model
 			{
 				s = s + "\n@param " + ra.name + " " + ra.doc;
 			}
-			return s + "\n\n@return " + this.returnASDoc;
+			if(!StringUtil.isBlank(returnASDoc))
+				s += "\n\n@return " + this.returnASDoc;
+			
+			return s;
 		}
 	}
 }
