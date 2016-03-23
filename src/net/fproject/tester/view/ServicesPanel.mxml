@@ -53,10 +53,10 @@ limitations under the License.
 				<s:GridColumn headerText="Type" dataField="type">
 					<s:itemEditor>
 						<fx:Component>
-							<s:ComboBoxGridItemEditor dataProvider="{ReflectionArgument.allTypes}">
+							<s:ComboBoxGridItemEditor dataProvider="{RemoteArgument.allTypes}">
 								<fx:Script>
 									<![CDATA[
-										import net.fproject.tester.model.ReflectionArgument;
+										import net.fproject.tester.model.RemoteArgument;
 									]]>
 								</fx:Script>
 							</s:ComboBoxGridItemEditor>
@@ -104,9 +104,9 @@ limitations under the License.
 			import net.fproject.tester.controller.EventHub;
 			import net.fproject.tester.events.ProfileModifiedEvent;
 			import net.fproject.tester.events.StatusChangeEvent;
-			import net.fproject.tester.model.ReflectionArgument;
-			import net.fproject.tester.model.ReflectionMethod;
-			import net.fproject.tester.model.ReflectionService;
+			import net.fproject.tester.model.RemoteArgument;
+			import net.fproject.tester.model.RemoteMethod;
+			import net.fproject.tester.model.RemoteService;
 			import net.fproject.tester.model.ServiceInfo;
 			
 			[Bindable]
@@ -114,9 +114,9 @@ limitations under the License.
 			private var eventHub:EventHub = EventHub.getInstance();
 			
 			[Bindable]
-			public var activeService:ReflectionService;
+			public var activeService:RemoteService;
 			[Bindable]
-			public var activeMethod:ReflectionMethod;
+			public var activeMethod:RemoteMethod;
 			
 			private var discoverPopup:IFlexDisplayObject;
 			
@@ -148,7 +148,7 @@ limitations under the License.
 			
 			private function onAddServiceClick( event:MouseEvent ):void
 			{
-				var s:ReflectionService = new ReflectionService();
+				var s:RemoteService = new RemoteService();
 				serviceInfo.activeProfile.services.addItem( s );
 				eventHub.dispatchEvent( new ProfileModifiedEvent( ProfileModifiedEvent.CHANGED ) );	
 			}
@@ -160,7 +160,7 @@ limitations under the License.
 					return;	
 				}	
 				
-				var s:ReflectionService = ReflectionService( serviceInfo.activeProfile.services.getItemAt( serviceList.selectedIndex ) );
+				var s:RemoteService = RemoteService( serviceInfo.activeProfile.services.getItemAt( serviceList.selectedIndex ) );
 				serviceInfo.activeProfile.services.removeItemAt( serviceList.selectedIndex );
 				if( activeService == s )
 				{
@@ -175,12 +175,12 @@ limitations under the License.
 			
 			private function onServiceClick(event:Event ):void
 			{
-				activeService = ReflectionService( serviceList.selectedItem );
+				activeService = RemoteService( serviceList.selectedItem );
 			}
 			
 			private function onMethodAdd( event:MouseEvent ):void
 			{
-				var m:ReflectionMethod = new ReflectionMethod();
+				var m:RemoteMethod = new RemoteMethod();
 				activeService.methods.addItem( m );
 			}
 			
@@ -189,7 +189,7 @@ limitations under the License.
 				if( methodList.selectedIndex < 0 )
 					return;
 				
-				var m:ReflectionMethod = ReflectionMethod( activeService.methods.getItemAt( methodList.selectedIndex ) );
+				var m:RemoteMethod = RemoteMethod( activeService.methods.getItemAt( methodList.selectedIndex ) );
 				activeService.methods.removeItemAt( methodList.selectedIndex );
 				if( activeMethod == m )
 				{
@@ -199,7 +199,7 @@ limitations under the License.
 			
 			private function onMethodClick( event:Event ):void
 			{
-				activeMethod = ReflectionMethod(methodList.selectedItem );
+				activeMethod = RemoteMethod(methodList.selectedItem );
 			}
 			
 			private function onArgumentClick( event:ListEvent):void
@@ -209,7 +209,7 @@ limitations under the License.
 			
 			private function onArgumentAdd( event:MouseEvent ):void
 			{
-				activeMethod.arguments.addItem( new ReflectionArgument() );
+				activeMethod.arguments.addItem( new RemoteArgument() );
 			}
 			
 			private function onArgumentDelete( event:MouseEvent ):void

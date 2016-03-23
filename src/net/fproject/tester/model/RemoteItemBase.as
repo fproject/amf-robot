@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 package net.fproject.tester.model
 {
-	public class ReflectionAbstract
+	public class RemoteItemBase
 	{
 		[Bindable]
 		public var name:String;

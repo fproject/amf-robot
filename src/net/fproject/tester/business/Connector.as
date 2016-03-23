@@ -28,9 +28,9 @@ package net.fproject.tester.business
 	import net.fproject.tester.events.LogEvent;
 	import net.fproject.tester.events.StatusChangeEvent;
 	import net.fproject.tester.model.Profile;
-	import net.fproject.tester.model.ReflectionArgument;
-	import net.fproject.tester.model.ReflectionMethod;
-	import net.fproject.tester.model.ReflectionService;
+	import net.fproject.tester.model.RemoteArgument;
+	import net.fproject.tester.model.RemoteMethod;
+	import net.fproject.tester.model.RemoteService;
 	import net.fproject.tester.model.ServiceInfo;
 	import net.fproject.tester.util.DataUtil;
 	
@@ -76,7 +76,7 @@ package net.fproject.tester.business
 			eventHub.dispatchEvent( new StatusChangeEvent( StatusChangeEvent.CONNECTED ) );
 		}
 		
-		public function call( service:ReflectionService, method:ReflectionMethod, resp:RResponder ):void
+		public function call(service:RemoteService, method:RemoteMethod, resp:RecoveryResponder):void
 		{	
 			var profile:Profile = ServiceInfo.getInstance().activeProfile;
 			proxy.endpoint = DataUtil.isBlank(profile.xdebugSessionId) ? profile.url : profile.url + "&XDEBUG_SESSION_START=" + profile.xdebugSessionId;
@@ -89,7 +89,7 @@ package net.fproject.tester.business
 
 			// set arguments
 			var args:Array = new Array();
-			for each( var arg:ReflectionArgument in method.arguments ) 
+			for each( var arg:RemoteArgument in method.arguments ) 
 			{
 				args.push(arg.remoteValue);	
 			}
@@ -123,11 +123,11 @@ package net.fproject.tester.business
 			for each(var serviceObj:Object in event.result)
 			{				
 				// Create service
-				var service:ReflectionService = new ReflectionService(serviceObj.name as String);
+				var service:RemoteService = new RemoteService(serviceObj.name as String);
 				service.doc = serviceObj.comment;
 				for each(var methodObj:Object in serviceObj.methods)
 				{
-					var method:ReflectionMethod = new ReflectionMethod(methodObj.name as String);
+					var method:RemoteMethod = new RemoteMethod(methodObj.name as String);
 					method.doc = methodObj.comment;
 					for each(var arg:Object in methodObj.parameters)
 					{
@@ -135,7 +135,7 @@ package net.fproject.tester.business
 							eventHub.dispatchEvent(new LogEvent(LogEvent.LOG, 
 								"[WARN]Empty parameter type:\r\nService: " + service.name + ", Method: " + method.name
 								+ ", Parameter: " + arg.name));
-						method.arguments.addItem(new ReflectionArgument(arg.name as String, arg.type)); 
+						method.arguments.addItem(new RemoteArgument(arg.name as String, arg.type)); 
 					}
 					service.methods.addItem(method);
 				}

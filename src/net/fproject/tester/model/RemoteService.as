@@ -21,12 +21,12 @@ package net.fproject.tester.model
 	import mx.collections.ArrayCollection;
 
 	[RemoteClass(alias="RService")]
-	public class ReflectionService extends ReflectionAbstract
+	public class RemoteService extends RemoteItemBase
 	{
 		[Bindable]
 		public var methods:ArrayCollection;
 		
-		public function ReflectionService( n:String='new')
+		public function RemoteService( n:String='new')
 		{
 			name = n;
 			methods = new ArrayCollection();

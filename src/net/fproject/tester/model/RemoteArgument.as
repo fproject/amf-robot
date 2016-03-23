@@ -23,7 +23,7 @@ package net.fproject.tester.model
 	import mx.controls.Alert;
 	
 	[RemoteClass(alias="RArgument")]
-	public class ReflectionArgument extends ReflectionAbstract
+	public class RemoteArgument extends RemoteItemBase
 	{
 		[Bindable]
 		public var type:String;
@@ -107,7 +107,7 @@ package net.fproject.tester.model
 				return Number(str);
 		}
 		
-		public function ReflectionArgument(name:String='new', type:String=TYPE_STRING, value:String='')
+		public function RemoteArgument(name:String='new', type:String=TYPE_STRING, value:String='')
 		{
 			this.name = name;
 			this.value = value;

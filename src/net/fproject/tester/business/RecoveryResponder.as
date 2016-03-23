@@ -20,9 +20,9 @@ package net.fproject.tester.business
 {
 	import mx.rpc.Responder;
 
-	public class RResponder extends Responder
+	public class RecoveryResponder extends Responder
 	{
-		public function RResponder(result:Function, fault:Function)
+		public function RecoveryResponder(result:Function, fault:Function)
 		{
 			super(result, fault);
 		}

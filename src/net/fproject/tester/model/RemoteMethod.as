@@ -21,12 +21,15 @@ package net.fproject.tester.model
 	import mx.collections.ArrayCollection;
 	
 	[RemoteClass(alias="RMethod")]
-	public class ReflectionMethod extends ReflectionAbstract
+	public class RemoteMethod extends RemoteItemBase
 	{
 		[Bindable]
 		public var arguments:ArrayCollection;
 		
-		public function ReflectionMethod( name:String='new', args:ArrayCollection=null)
+		[Bindable]
+		public var returnType:String;
+		
+		public function RemoteMethod(name:String='new', args:ArrayCollection=null)
 		{
 			this.name = name;
 			this.arguments = args;
@@ -40,6 +43,5 @@ package net.fproject.tester.model
 		{
 			return name;	
 		}
-
 	}
 }
