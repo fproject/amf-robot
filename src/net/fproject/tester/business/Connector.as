@@ -138,6 +138,7 @@ package net.fproject.tester.business
 								+ ", Parameter: " + arg.name));
 						method.arguments.addItem(new RemoteArgument(arg.name, DataUtil.parseRemoteType(arg.type))); 
 					}
+					method.populateASDocs();
 					service.methods.addItem(method);
 				}
 				

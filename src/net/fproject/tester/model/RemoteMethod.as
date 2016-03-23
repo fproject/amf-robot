@@ -31,6 +31,9 @@ package net.fproject.tester.model
 		[Bindable]
 		public var returnType:String;
 		
+		[Bindable]
+		public var returnASDoc:String;
+		
 		public function RemoteMethod(name:String='new', args:ArrayCollection=null)
 		{
 			this.name = name;
@@ -38,6 +41,70 @@ package net.fproject.tester.model
 			if( this.arguments == null )
 			{
 				this.arguments = new ArrayCollection();
+			}
+		}
+		
+		public function populateASDocs():void
+		{
+			if(this.arguments == null || this.arguments.length == 0)
+				return;
+			var s:String = StringUtil.trim(this.doc, " \t");
+			if(StringUtil.isBlank(s))
+				return;
+			var params:Object = {};
+			var regex:RegExp = /( |\t)*\*( |\t)*@param(.(?!@param|@return|@var))*/g;
+			var sp:String;
+			var i:int;
+			var p:Object;
+			var r:Object;
+			var pname:String;
+			var ptype:String;
+			do
+			{
+				r = regex.exec(s);
+				if(r != null)
+				{
+					sp = r[0];
+					if(sp != null)
+					{
+						i = sp.indexOf("@param");
+						if(i > -1)
+						{
+							sp = StringUtil.trim(sp.substr(i + 6), " \t");
+							i = sp.indexOf("$");
+							if(i > -1)
+							{
+								p = {type:StringUtil.trim(sp.substr(0,i), " \t"),doc:""};
+								sp = StringUtil.trim(sp.substr(i + 1), " \t");
+								i = sp.indexOf(" ");
+								if(i == -1)
+									i = sp.indexOf("\t");
+								if(i == -1)
+									i = sp.length;
+								p.name = StringUtil.trim(sp.substr(0, i), " \t");
+								if(i < sp.length - 1)
+									p.doc = StringUtil.trim(sp.substr(i + 1), " \t");
+								params[p.name] = p;
+							}
+						}
+					}
+				}
+				else
+					break;
+				
+			} while(true);
+			
+			for each(var ra:RemoteArgument in this.arguments)
+			{
+				if(params.hasOwnProperty(ra.name))
+					ra.doc = params[ra.name].doc;
+			}
+			i = s.lastIndexOf("@return");
+			if(i > -1)
+			{
+				returnASDoc = StringUtil.trim(s.substr(i + 7), " \t");
+				if(StringUtil.endsWith(returnASDoc, "*/"))
+					returnASDoc = StringUtil.trim(returnASDoc.substr(0, returnASDoc.length - 2), " \t");
 			}
 		}
 		
@@ -51,7 +118,7 @@ package net.fproject.tester.model
 			var s:String = StringUtil.trim(this.doc);
 			if(StringUtil.isBlank(s))
 				return null;
-			var i:int = s.search(/(\r|\n)+( |t)*\* *@[a-z]+/);
+			var i:int = s.search(/(\r|\n)+( |t)*\*( |\t)*@[a-z]+/);
 			if(i > 0)
 				s = s.substring(0, i);
 			
@@ -80,7 +147,13 @@ package net.fproject.tester.model
 		
 		public function get asDoc():String
 		{
-			return this.doc;
+			var s:String = "Method: " + this.name + "\n\n" +
+				this.getASDocBody() + "\n";
+			for each (var ra:RemoteArgument in this.arguments)
+			{
+				s = s + "\n@param " + ra.name + " " + ra.doc;
+			}
+			return s + "\n\n@return " + this.returnASDoc;
 		}
 	}
 }
