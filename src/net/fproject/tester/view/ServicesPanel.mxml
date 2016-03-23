@@ -33,7 +33,7 @@ limitations under the License.
 			</s:ArrayList>
 		</s:columns>
 	</s:DataGrid>
-	<s:DataGrid height="180" left="268" top="10" right="10"
+	<s:DataGrid height="180" left="268" top="10" right="{argumentsGrid.width + 8}"
 				id="methodList"
 				gridClick="onMethodClick(event)"
 				gridItemEditorSessionSave="onEditEnd(event)"
@@ -42,6 +42,7 @@ limitations under the License.
 		<s:columns>
 			<s:ArrayList>
 				<s:GridColumn headerText="Methods" dataField="name"/>
+				<s:GridColumn headerText="Return Type" dataField="returnType"/>
 			</s:ArrayList>
 		</s:columns>
 	</s:DataGrid>
@@ -49,7 +50,7 @@ limitations under the License.
 		<s:columns>
 			<s:ArrayList>
 				<s:GridColumn headerText="Arguments" dataField="name"/>
-				<s:GridColumn headerText="Default values" dataField="value"/>
+				<s:GridColumn headerText="Default Value" dataField="value"/>
 				<s:GridColumn headerText="Type" dataField="type">
 					<s:itemEditor>
 						<fx:Component>

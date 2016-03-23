@@ -4,7 +4,7 @@
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
 					   xmlns:view="net.fproject.tester.view.*" 
 					   creationComplete="init()" 
-					   currentState="Connect" minHeight="750" minWidth="920">
+					   currentState="Connect" minHeight="760" minWidth="1200">
 	
 	<fx:Style source="style.css"/>
 	<s:states>

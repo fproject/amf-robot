@@ -24,6 +24,8 @@ package net.fproject.tester.util
 	import mx.utils.ObjectProxy;
 	import mx.utils.object_proxy;
 	
+	import net.fproject.utils.StringUtil;
+	
 	public class DataUtil
 	{
 		public static function getResultJSON(data:Object):String
@@ -206,5 +208,62 @@ package net.fproject.tester.util
 		{
 			return s == null || s.length == 0;
 		}
+		
+		public static function parseDate(str:String):Date
+		{
+			if(str == null || str == "")
+				return null;
+			var matches : Array = str.match(/(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d).*/);
+			
+			var d : Date = new Date();
+			
+			d.setFullYear(int(matches[1]), int(matches[2]) - 1, int(matches[3]));
+			d.setHours(int(matches[4]), int(matches[5]), int(matches[6]), 0);
+			
+			return d;
+		}
+		
+		public static function parseBoolean(str:String):Boolean
+		{
+			if(str == null)
+				return false;
+			str = str.toLowerCase();
+			switch(str)
+			{
+				case "true":
+				case "t":
+				case "1":
+				case "yes":
+				case "y":
+					return true;
+				default:
+					return false;
+			}
+		}
+		
+		public static function parseNumber(str:String):Number
+		{
+			if(str == null || str == "")
+				return NaN;
+			else
+				return Number(str);
+		}
+		
+		public static function parseRemoteType(type:String):String
+		{
+			if(type == "mixed")
+				type = "Object";
+			if(type.toLowerCase() == "DateTime")
+				type = "Date";
+			if(type == "string")
+				type = "String";
+			if(type.toLowerCase() == "bool" || type.toLowerCase() == "boolean")
+				type = "Boolean";
+			if(type.toLowerCase() == "float" || type.toLowerCase() == "double" || type.toLowerCase() == "long")
+				type = "Number";
+			if(StringUtil.endsWith(type, "[]") || type.toLowerCase() == "array")
+				type = "Array";
+			return type;
+		}		
 	}
 }

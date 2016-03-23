@@ -129,13 +129,14 @@ package net.fproject.tester.business
 				{
 					var method:RemoteMethod = new RemoteMethod(methodObj.name as String);
 					method.doc = methodObj.comment;
+					method.returnType = DataUtil.parseRemoteType(methodObj.returnType);
 					for each(var arg:Object in methodObj.parameters)
 					{
 						if(arg.type == undefined || arg.type == "")
 							eventHub.dispatchEvent(new LogEvent(LogEvent.LOG, 
 								"[WARN]Empty parameter type:\r\nService: " + service.name + ", Method: " + method.name
 								+ ", Parameter: " + arg.name));
-						method.arguments.addItem(new RemoteArgument(arg.name as String, arg.type)); 
+						method.arguments.addItem(new RemoteArgument(arg.name, DataUtil.parseRemoteType(arg.type))); 
 					}
 					service.methods.addItem(method);
 				}

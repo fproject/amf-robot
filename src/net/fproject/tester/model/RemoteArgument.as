@@ -22,6 +22,8 @@ package net.fproject.tester.model
 	import mx.collections.IList;
 	import mx.controls.Alert;
 	
+	import net.fproject.tester.util.DataUtil;
+	
 	[RemoteClass(alias="RArgument")]
 	public class RemoteArgument extends RemoteItemBase
 	{
@@ -49,15 +51,15 @@ package net.fproject.tester.model
 			} 
 			else if(this.type == TYPE_DATE_TIME)
 			{
-				v = parseDate(this.value);
+				v = DataUtil.parseDate(this.value);
 			}
 			else if(this.type == TYPE_BOOLEAN)
 			{
-				v = parseBoolean(this.value);
+				v = DataUtil.parseBoolean(this.value);
 			}
 			else if(this.type == TYPE_NUMBER)
 			{
-				v = parseNumber(this.value);
+				v = DataUtil.parseNumber(this.value);
 			}
 			else 
 			{
@@ -67,45 +69,6 @@ package net.fproject.tester.model
 			return v;
 		}
 		
-		private function parseDate(str:String):Date
-		{
-			if(str == null || str == "")
-				return null;
-			var matches : Array = str.match(/(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d).*/);
-			
-			var d : Date = new Date();
-			
-			d.setFullYear(int(matches[1]), int(matches[2]) - 1, int(matches[3]));
-			d.setHours(int(matches[4]), int(matches[5]), int(matches[6]), 0);
-			
-			return d;
-		}
-		
-		private function parseBoolean(str:String):Boolean
-		{
-			if(str == null)
-				return false;
-			str = str.toLowerCase();
-			switch(str)
-			{
-				case "true":
-				case "t":
-				case "1":
-				case "yes":
-				case "y":
-					return true;
-				default:
-					return false;
-			}
-		}
-		
-		private function parseNumber(str:String):Number
-		{
-			if(str == null || str == "")
-				return NaN;
-			else
-				return Number(str);
-		}
 		
 		public function RemoteArgument(name:String='new', type:String=TYPE_STRING, value:String='')
 		{
