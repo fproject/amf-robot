@@ -21,6 +21,6 @@ package {0}
     [RemoteClass(alias="{1}")]
     public class {2}
     {
-        {3};
+        {3}
     }
 }
