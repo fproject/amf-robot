@@ -18,7 +18,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 package net.fproject.robot.business
 {
-	import mx.controls.Alert;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
@@ -36,7 +35,7 @@ package net.fproject.robot.business
 	
 	public class Connector
 	{
-		public static var FMT_AMFPHP:String = "amfphp";
+		public static var FMT_PHP_AMF:String = "phpamf";
 		
 		private var eventHub:EventHub 		= EventHub.getInstance();
 		private var serviceInfo:ServiceInfo 	= ServiceInfo.getInstance();
@@ -61,9 +60,9 @@ package net.fproject.robot.business
 			return _instance;
 		}
 		
-		public function connect( profile:Profile ):void
+		public function connect(profile:Profile):void
 		{
-			eventHub.dispatchEvent( new StatusChangeEvent( StatusChangeEvent.CONNECTING ) );
+			eventHub.dispatchEvent(new StatusChangeEvent(StatusChangeEvent.CONNECTING));
 			
 			proxy = new RemoteObject();
 			proxy.endpoint = DataUtil.isBlank(profile.xdebugSessionId) ? profile.url : profile.url + "&XDEBUG_SESSION_START=" + profile.xdebugSessionId;
@@ -73,7 +72,7 @@ package net.fproject.robot.business
 				proxy.setCredentials(profile.user, profile.password);
 			
 			proxy.showBusyCursor = true;
-			eventHub.dispatchEvent( new StatusChangeEvent( StatusChangeEvent.CONNECTED ) );
+			eventHub.dispatchEvent(new StatusChangeEvent(StatusChangeEvent.CONNECTED));
 		}
 		
 		public function call(service:RemoteService, method:RemoteMethod, resp:RecoveryResponder):void
@@ -81,15 +80,15 @@ package net.fproject.robot.business
 			var profile:Profile = ServiceInfo.getInstance().activeProfile;
 			proxy.endpoint = DataUtil.isBlank(profile.xdebugSessionId) ? profile.url : profile.url + "&XDEBUG_SESSION_START=" + profile.xdebugSessionId;
 			proxy.source = service.name;
-			var op:AbstractOperation = proxy.getOperation( method.name );
-			if( !op.hasEventListener( ResultEvent.RESULT ) )
-				op.addEventListener( ResultEvent.RESULT, resp.result );
-			if( !op.hasEventListener( FaultEvent.FAULT ) )
-				op.addEventListener( FaultEvent.FAULT, resp.fault );
+			var op:AbstractOperation = proxy.getOperation(method.name);
+			if(!op.hasEventListener(ResultEvent.RESULT))
+				op.addEventListener(ResultEvent.RESULT, resp.result);
+			if(!op.hasEventListener(FaultEvent.FAULT))
+				op.addEventListener(FaultEvent.FAULT, resp.fault);
 
 			// set arguments
 			var args:Array = new Array();
-			for each( var arg:RemoteArgument in method.arguments ) 
+			for each(var arg:RemoteArgument in method.arguments) 
 			{
 				args.push(arg.remoteValue);	
 			}
@@ -102,25 +101,28 @@ package net.fproject.robot.business
 		public function discover(format:String, serviceName:String, methodName:String):void
 		{
 			serviceInfo.activeProfile.services.removeAll();
-			eventHub.dispatchEvent( new StatusChangeEvent( StatusChangeEvent.RESET ) );
+			eventHub.dispatchEvent(new StatusChangeEvent(StatusChangeEvent.RESET));
 			proxy.source = serviceName;
-			if( format == Connector.FMT_AMFPHP )
+			if(format == Connector.FMT_PHP_AMF)
 			{
 				if(methodName == null || methodName == '')
 					methodName = 'discover';
 				var op:AbstractOperation = proxy.getOperation(methodName);
-				if( !op.hasEventListener( ResultEvent.RESULT ) )
-					op.addEventListener( ResultEvent.RESULT, onAMFPHPDiscoverResult );
-				if( !op.hasEventListener( FaultEvent.FAULT ) )
-					op.addEventListener( FaultEvent.FAULT, onServicesFault );
+				if(!op.hasEventListener(ResultEvent.RESULT))
+					op.addEventListener(ResultEvent.RESULT, onPhpAmfDiscoverResult);
+				if(!op.hasEventListener(FaultEvent.FAULT))
+					op.addEventListener(FaultEvent.FAULT, onServicesFault);
 				op.send();
 			}
 		}
 		
-		private function onAMFPHPDiscoverResult( event:ResultEvent ):void
+		private function onPhpAmfDiscoverResult(event:ResultEvent):void
 		{
+			if(event.result == null || !event.result.hasOwnProperty("services"))
+				return;
 			
-			for each(var serviceObj:Object in event.result)
+			var serviceObjects:Array = event.result["services"];
+			for each(var serviceObj:Object in serviceObjects)
 			{				
 				// Create service
 				var service:RemoteService = new RemoteService(serviceObj.name as String);
@@ -146,7 +148,7 @@ package net.fproject.robot.business
 			}
 		}
 		
-		private function onServicesFault( event:FaultEvent ):void
+		private function onServicesFault(event:FaultEvent):void
 		{
 			eventHub.dispatchEvent(new LogEvent(LogEvent.LOG, 
 				"[ERROR]Unable to do services discovery, invalid service URL or server response:\r\n" + event.fault.message));

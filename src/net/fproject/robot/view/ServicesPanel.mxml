@@ -127,101 +127,101 @@ limitations under the License.
 			
 			private function init():void
 			{
-				eventHub.addEventListener( StatusChangeEvent.RESET, onReset );
-				eventHub.addEventListener( StatusChangeEvent.CONNECTING, onConnecting );
+				eventHub.addEventListener(StatusChangeEvent.RESET, onReset);
+				eventHub.addEventListener(StatusChangeEvent.CONNECTING, onConnecting);
 			}
 			
-			private function onConnecting( event:StatusChangeEvent ):void
+			private function onConnecting(event:StatusChangeEvent):void
 			{
 				this.activeService = null;
 				this.activeMethod = null;
 			}
 			
-			private function onReset( event:StatusChangeEvent ):void
+			private function onReset(event:StatusChangeEvent):void
 			{
 				activeMethod = null;
 				activeService = null;
 			}
 			
-			private function discoverClick( event:MouseEvent ):void
+			private function discoverClick(event:MouseEvent):void
 			{
 				if(discoverPopup == null)
 					discoverPopup = new DiscoverWindow;
-				PopUpManager.addPopUp(discoverPopup,FlexGlobals.topLevelApplication as DisplayObject, true );
+				PopUpManager.addPopUp(discoverPopup,FlexGlobals.topLevelApplication as DisplayObject, true);
 				PopUpManager.centerPopUp(discoverPopup);
 			}
 			
-			private function onAddServiceClick( event:MouseEvent ):void
+			private function onAddServiceClick(event:MouseEvent):void
 			{
 				var s:RemoteService = new RemoteService();
-				serviceInfo.activeProfile.services.addItem( s );
-				eventHub.dispatchEvent( new ProfileModifiedEvent( ProfileModifiedEvent.CHANGED ) );	
+				serviceInfo.activeProfile.services.addItem(s);
+				eventHub.dispatchEvent(new ProfileModifiedEvent(ProfileModifiedEvent.CHANGED));	
 			}
 			
-			private function onDeleteServiceClick( event:MouseEvent ):void
+			private function onDeleteServiceClick(event:MouseEvent):void
 			{
-				if( serviceList.selectedIndex < 0 )
+				if(serviceList.selectedIndex < 0)
 				{
 					return;	
 				}	
 				
-				var s:RemoteService = RemoteService( serviceInfo.activeProfile.services.getItemAt( serviceList.selectedIndex ) );
-				serviceInfo.activeProfile.services.removeItemAt( serviceList.selectedIndex );
-				if( activeService == s )
+				var s:RemoteService = RemoteService(serviceInfo.activeProfile.services.getItemAt(serviceList.selectedIndex));
+				serviceInfo.activeProfile.services.removeItemAt(serviceList.selectedIndex);
+				if(activeService == s)
 				{
 					activeService = null;
 				}
 			}
 			
-			private function onEditEnd( event:Event ):void
+			private function onEditEnd(event:Event):void
 			{
 				serviceList.callLater(serviceInfo.dataChanged);
 			}
 			
-			private function onServiceClick(event:Event ):void
+			private function onServiceClick(event:Event):void
 			{
-				activeService = RemoteService( serviceList.selectedItem );
+				activeService = RemoteService(serviceList.selectedItem);
 			}
 			
-			private function onMethodAdd( event:MouseEvent ):void
+			private function onMethodAdd(event:MouseEvent):void
 			{
 				var m:RemoteMethod = new RemoteMethod();
-				activeService.methods.addItem( m );
+				activeService.methods.addItem(m);
 			}
 			
-			private function onMethodDelete( event:MouseEvent ):void
+			private function onMethodDelete(event:MouseEvent):void
 			{
-				if( methodList.selectedIndex < 0 )
+				if(methodList.selectedIndex < 0)
 					return;
 				
-				var m:RemoteMethod = RemoteMethod( activeService.methods.getItemAt( methodList.selectedIndex ) );
-				activeService.methods.removeItemAt( methodList.selectedIndex );
-				if( activeMethod == m )
+				var m:RemoteMethod = RemoteMethod(activeService.methods.getItemAt(methodList.selectedIndex));
+				activeService.methods.removeItemAt(methodList.selectedIndex);
+				if(activeMethod == m)
 				{
 					activeMethod = null;
 				}
 			}
 			
-			private function onMethodClick( event:Event ):void
+			private function onMethodClick(event:Event):void
 			{
-				activeMethod = RemoteMethod(methodList.selectedItem );
+				activeMethod = RemoteMethod(methodList.selectedItem);
 			}
 			
-			private function onArgumentClick( event:ListEvent):void
+			private function onArgumentClick(event:ListEvent):void
 			{
 				
 			}
 			
-			private function onArgumentAdd( event:MouseEvent ):void
+			private function onArgumentAdd(event:MouseEvent):void
 			{
-				activeMethod.arguments.addItem( new RemoteArgument() );
+				activeMethod.arguments.addItem(new RemoteArgument());
 			}
 			
-			private function onArgumentDelete( event:MouseEvent ):void
+			private function onArgumentDelete(event:MouseEvent):void
 			{
-				if( argumentsGrid.selectedIndex < 0 )
+				if(argumentsGrid.selectedIndex < 0)
 					return;
-				activeMethod.arguments.removeItemAt( argumentsGrid.selectedIndex );
+				activeMethod.arguments.removeItemAt(argumentsGrid.selectedIndex);
 			}
 			
 			protected function methodToDataTip(item:RemoteMethod, column:GridColumn):String

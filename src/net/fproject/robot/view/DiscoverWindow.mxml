@@ -55,7 +55,7 @@ limitations under the License.
 			
 			private function discoverClick(event:MouseEvent):void
 			{
-				con.discover(Connector.FMT_AMFPHP, discoveryServiceName.text, discoveryMethodName.text);
+				con.discover(Connector.FMT_PHP_AMF, discoveryServiceName.text, discoveryMethodName.text);
 				PopUpManager.removePopUp(this);
 			}
 		]]>
