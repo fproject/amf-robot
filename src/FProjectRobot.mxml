@@ -17,7 +17,7 @@
 					   visible.Connect="false">
 		<s:layout><s:HorizontalLayout verticalAlign="middle" paddingLeft="10"/></s:layout>
 		<s:Button label="Quit" iconPlacement="top" icon="@Embed(source='assets/stop.png')" 
-				  click="onQuitClick(event)" toolTip="Quit AMF Tester"/>
+				  click="onQuitClick(event)" toolTip="Quit AMF Robot"/>
 		<s:Button label="Endpoints" icon="@Embed(source='assets/connect.png')" 
 				  iconPlacement="top" click="onConnectClick(event)" toolTip="Open AMF Endpoint Configuration"/>
 		<mx:VRule width="2" height="35"/>
