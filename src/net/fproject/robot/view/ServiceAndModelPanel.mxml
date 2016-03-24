@@ -20,8 +20,13 @@ limitations under the License.
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 creationComplete="init()" title="Methods and services">
-	<s:DataGrid height="180" width="250" left="10" top="10" 
+		 creationComplete="init()" title="Services and Methods"
+		 skinClass="net.fproject.robot.view.skin.ServiceAndModelPanelSkin">
+	<s:states>
+		<s:State name="serviceMode" />
+		<s:State name="modelMode" />
+	</s:states>
+	<s:DataGrid height="180" width="250" left="10" top="10" includeIn="serviceMode"
 				id="serviceList"
 				gridClick="onServiceClick(event)"
 				gridItemEditorSessionSave="onEditEnd(event)"
@@ -33,7 +38,7 @@ limitations under the License.
 			</s:ArrayList>
 		</s:columns>
 	</s:DataGrid>
-	<s:DataGrid height="180" left="268" top="10" right="{argumentsGrid.width + 8}"
+	<s:DataGrid height="180" left="268" top="10" right="{argumentsGrid.width + 8}" includeIn="serviceMode"
 				id="methodList"
 				gridClick="onMethodClick(event)"
 				gridItemEditorSessionSave="onEditEnd(event)"
@@ -50,7 +55,8 @@ limitations under the License.
 			</s:ArrayList>
 		</s:columns>
 	</s:DataGrid>
-	<s:DataGrid top="10" id="argumentsGrid" dataProvider="{activeMethod.arguments}" right="10" width="386" height="180" editable="true">
+	<s:DataGrid top="10" id="argumentsGrid"  includeIn="serviceMode"
+				dataProvider="{activeMethod.arguments}" right="10" width="386" height="180" editable="true">
 		<s:columns>
 			<s:ArrayList>
 				<s:GridColumn headerText="Arguments" dataField="name"/>
@@ -74,30 +80,39 @@ limitations under the License.
 	
 	<s:Button icon="@Embed(source='assets/add.png')" toolTip="Add service"
 			  id="addServiceBtn" left="10" top="201" width="50"
-			  click="onAddServiceClick(event)"/>
+			  click="onAddServiceClick(event)"
+			  includeIn="serviceMode"/>
 	<s:Button icon="@Embed(source='assets/delete.png')" toolTip="Delete service"
 			  id="deleteServiceBtn" left="65" top="201" width="50"
-			  enabled="{serviceList.selectedIndex>=0}" click="onDeleteServiceClick(event)"/>
+			  enabled="{serviceList.selectedIndex>=0}" click="onDeleteServiceClick(event)"
+			  includeIn="serviceMode"/>
 	<s:Button x="120" y="201" icon="@Embed(source='assets/cog_add.png')" 
 			  id="discoverBtn" width="50" toolTip="Discover AMF endpoint"
-			  click="discoverClick(event)"/>
+			  click="discoverClick(event)"
+			  includeIn="serviceMode"/>
 	
 	<s:Button icon="@Embed(source='assets/add.png')" toolTip="Add method"
 			  id="addMethodBtn" left="268" top="200" width="50"
-			  enabled="{activeService!=null}" click="onMethodAdd(event)"/>
+			  enabled="{activeService!=null}" click="onMethodAdd(event)"
+			  includeIn="serviceMode"/>
 	<s:Button icon="@Embed(source='assets/delete.png')" toolTip="Delete method"
 			  id="deleteMethodBtn" left="323" top="200" width="50"
-			  enabled="{methodList.selectedIndex>=0}" click="onMethodDelete(event)"/>
+			  enabled="{methodList.selectedIndex>=0}" click="onMethodDelete(event)"
+			  includeIn="serviceMode"/>
 	
 	<s:Button icon="@Embed(source='assets/add.png')" toolTip="Add method argument"
 			  id="addArgBtn" right="346" top="201" width="50"
-			  enabled="{activeMethod!=null}" click="onArgumentAdd(event)"/>
+			  enabled="{activeMethod!=null}" click="onArgumentAdd(event)"
+			  includeIn="serviceMode"/>
 	<s:Button icon="@Embed(source='assets/delete.png')" toolTip="Delete method argument"
 			  id="deleteArgBtn" right="291" top="201" width="50"
-			  enabled="{argumentsGrid.selectedIndex>=0}" click="onArgumentDelete(event)"/>
+			  enabled="{argumentsGrid.selectedIndex>=0}" click="onArgumentDelete(event)"
+			  includeIn="serviceMode"/>
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.MenuEvent;
+			import mx.controls.Menu;
 			import mx.core.FlexGlobals;
 			import spark.events.GridItemEditorEvent;
 			import spark.events.GridEvent;
@@ -125,10 +140,29 @@ limitations under the License.
 			
 			private var discoverPopup:IFlexDisplayObject;
 			
+			private var dropdownMenu:Menu;
+			
 			private function init():void
 			{
 				eventHub.addEventListener(StatusChangeEvent.RESET, onReset);
 				eventHub.addEventListener(StatusChangeEvent.CONNECTING, onConnecting);
+				dropDownButton.addEventListener(MouseEvent.CLICK, onDropDownClick);
+				var dp:XML = 
+					<root>
+						<menuitem id="services" label="Services and Methods" type="radio" groupName="g" toggled="true"/>
+						<menuitem id="models" label="Models" type="radio" groupName="g"/>
+					</root>;
+				dropdownMenu = Menu.createMenu(this, dp, false);
+				dropdownMenu.labelField="@label";
+				dropdownMenu.addEventListener(MenuEvent.ITEM_CLICK, menuHandler);
+			}
+			
+			// Event handler for the Menu control's change event.
+			private function menuHandler(evt:MenuEvent):void
+			{
+				this.title = evt.item.@label;
+				this.currentState = evt.item.@id == "services" ? "serviceMode" : "modelMode";
+				this.dropDownButton.toolTip = "Change to " + (evt.item.@id == "services" ? "Models" : "Services and Methods") + " view";
 			}
 			
 			private function onConnecting(event:StatusChangeEvent):void
@@ -141,6 +175,13 @@ limitations under the License.
 			{
 				activeMethod = null;
 				activeService = null;
+			}
+			
+			private function onDropDownClick(e:MouseEvent):void
+			{
+				var p:Point = new Point(0,dropDownButton.height);
+				p = dropDownButton.localToGlobal(p);
+				dropDownButton.callLater(function(x:*,y:*):void{dropdownMenu.show(x, y);},[p.x, p.y]);
 			}
 			
 			private function discoverClick(event:MouseEvent):void
@@ -230,6 +271,9 @@ limitations under the License.
 					return "Click to view ASDoc...";
 				return item.getASDocBody();
 			}
+			
+			[SkinPart]
+			public var dropDownButton:Button;
 		]]>
 	</fx:Script>		
 </s:Panel>

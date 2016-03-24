@@ -38,8 +38,8 @@
 	
 	<s:Label text="AMF Robot version " x="700" y="30" color="#0026FF" fontSize="18" id="versionLabel"/>
 	
-	<view:ServicesPanel left="10" top="73" styleName="lightTitle" id="serviceInfoLabel" 
-						minWidth="817" minHeight="273" title="Services and Methods" 
+	<view:ServiceAndModelPanel left="10" top="73" styleName="lightTitle" id="serviceInfoLabel" 
+						minWidth="817" minHeight="273"
 						visible.Connect="false" visible.OutputMax="false"
 						right="10" height="273"/>
 	
