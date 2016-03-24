@@ -257,6 +257,8 @@ package net.fproject.robot.util
 				type = "Date";
 			if(type == "string")
 				type = "String";
+			if(type == "integer")
+				type = "int";
 			if(type.toLowerCase() == "bool" || type.toLowerCase() == "boolean")
 				type = "Boolean";
 			if(type.toLowerCase() == "float" || type.toLowerCase() == "double" || type.toLowerCase() == "long")

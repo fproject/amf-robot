@@ -112,11 +112,17 @@ limitations under the License.
 	
 	<s:List height="180" width="250" left="5" top="5" bottom="5" includeIn="modelMode"
 				id="modelList" verticalScrollPolicy="auto"
-				dataProvider="{serviceInfo.activeProfile.models}" labelField="name"/>
-	<as3syntaxhighlight:AS3CodeViewer left="260" top="5" bottom="5" right="5" focusEnabled="false" includeIn="modelMode"/>
+				dataProvider="{serviceInfo.activeProfile.models}" labelField="name"
+				click="modelList_clickHandler(event)"/>
+	
+	<as3syntaxhighlight:AS3CodeViewer id="modelCodeViewer" left="260" top="5" bottom="5" right="5"
+									  focusEnabled="false" includeIn="modelMode"
+									  fontFamily="Courier New"/>
 									  
 	<fx:Script>
 		<![CDATA[
+			import net.fproject.robot.util.ModelCodeBuilder;
+			import net.fproject.robot.model.RemoteModel;
 				import mx.events.MenuEvent;
 				import mx.controls.Menu;
 				import mx.core.FlexGlobals;
@@ -169,6 +175,14 @@ limitations under the License.
 				this.title = evt.item.@label;
 				this.currentState = evt.item.@id == "services" ? "serviceMode" : "modelMode";
 				this.dropDownButton.toolTip = "Change to " + (evt.item.@id == "services" ? "Models" : "Services and Methods") + " view";
+				if(this.currentState == "modelMode")
+				{
+					if(modelList != null)
+						modelList.selectedItem = null;
+					if(modelCodeViewer != null)
+						modelCodeViewer.text = null;
+				}
+					
 			}
 			
 			private function onConnecting(event:StatusChangeEvent):void
@@ -280,6 +294,17 @@ limitations under the License.
 			
 			[SkinPart]
 			public var dropDownButton:Button;
+			
+			protected function modelList_clickHandler(event:MouseEvent):void
+			{
+				var selectedModel:RemoteModel = modelList.selectedItem;
+				if(selectedModel != null)
+				{
+					var codeBuilder:ModelCodeBuilder = new ModelCodeBuilder(selectedModel);
+					modelCodeViewer.htmlText = codeBuilder.buildPrettyPrint();
+				}
+			}
+			
 		]]>
 	</fx:Script>		
 </s:Panel>

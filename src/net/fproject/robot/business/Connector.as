@@ -162,7 +162,7 @@ package net.fproject.robot.business
 					prop.doc = propObj.comment;
 					prop.type = DataUtil.parseRemoteType(propObj.type);
 					
-					model.properties.addItem(method);
+					model.properties.addItem(prop);
 				}
 				
 				serviceInfo.activeProfile.models.addItem(model);
