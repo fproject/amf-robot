@@ -16,24 +16,46 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.events
+package net.fproject.robot.model
 {
-	import flash.events.Event;
+	import net.fproject.robot.controller.EventHub;
+	import net.fproject.robot.events.ProfileModifiedEvent;
+	import net.fproject.robot.events.StatusChangeEvent;
 	
-	public class LogEvent extends Event
+	public class ServiceInfo
 	{
-		public static const LOG:String = "log";
-		private var _message:String;
-
-		public function get message():String
+		private var eventHub:EventHub = EventHub.getInstance();
+		
+		[Bindable]
+		public var activeProfile:Profile;
+		
+		private static var _instance:ServiceInfo;
+		
+		public function ServiceInfo()
 		{
-			return _message;
+			if(_instance != null)
+			{
+				throw new Error("Connector must be used as singleton");
+			}
 		}
 		
-		public function LogEvent(type:String, message:String)
+		public static function getInstance():ServiceInfo
 		{
-			super(type);
-			_message = message;
+			if(_instance == null)
+				_instance = new ServiceInfo;
+			
+			return _instance;
 		}
+		
+		private function onDisconnect( event:StatusChangeEvent ):void
+		{
+			activeProfile = null;
+		}
+		
+		public function dataChanged():void
+		{
+			eventHub.dispatchEvent( new ProfileModifiedEvent( ProfileModifiedEvent.CHANGED ) );
+		}
+
 	}
 }

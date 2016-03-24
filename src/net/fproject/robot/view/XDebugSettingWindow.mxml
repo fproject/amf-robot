@@ -11,9 +11,9 @@
 		<![CDATA[
 			import mx.managers.PopUpManager;
 			
-			import net.fproject.tester.model.Profile;
-			import net.fproject.tester.model.ServiceInfo;
-			import net.fproject.tester.util.DataUtil;
+			import net.fproject.robot.model.Profile;
+			import net.fproject.robot.model.ServiceInfo;
+			import net.fproject.robot.util.DataUtil;
 			
 			protected function onClose(event:Event):void
 			{

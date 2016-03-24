@@ -74,10 +74,10 @@ limitations under the License.
 			import mx.controls.Alert;
 			import mx.events.ListEvent;
 			
-			import net.fproject.tester.controller.ConnectController;
-			import net.fproject.tester.controller.EventHub;
-			import net.fproject.tester.events.StatusChangeEvent;
-			import net.fproject.tester.model.Profile;
+			import net.fproject.robot.controller.ConnectController;
+			import net.fproject.robot.controller.EventHub;
+			import net.fproject.robot.events.StatusChangeEvent;
+			import net.fproject.robot.model.Profile;
 			
 			[Bindable]
 			private var controller:ConnectController;

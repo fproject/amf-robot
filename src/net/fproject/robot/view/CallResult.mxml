@@ -51,7 +51,7 @@ limitations under the License.
 		<![CDATA[
 			import mx.utils.ObjectUtil;
 			
-			import net.fproject.tester.util.DataUtil;
+			import net.fproject.robot.util.DataUtil;
 			
 			[Bindable]
 			public var resultData:Object

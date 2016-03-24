@@ -16,7 +16,7 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.model
+package net.fproject.robot.model
 {
 	import mx.collections.ArrayCollection;
 	

@@ -51,7 +51,7 @@ limitations under the License.
 								<mx:ComboBox dataProvider="{RemoteArgument.allTypes}">
 									<fx:Script>
 										<![CDATA[
-											import net.fproject.tester.model.RemoteArgument;
+											import net.fproject.robot.model.RemoteArgument;
 										]]>
 									</fx:Script>
 								</mx:ComboBox>
@@ -89,21 +89,21 @@ limitations under the License.
 	<fx:Script>
 		<![CDATA[
 			import mx.core.IVisualElement;
-			import net.fproject.tester.util.DataUtil;
+			import net.fproject.robot.util.DataUtil;
 			import mx.events.FlexEvent;
-			import net.fproject.tester.events.LogEvent;
+			import net.fproject.robot.events.LogEvent;
 			import mx.events.IndexChangedEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.utils.ObjectUtil;
 			
-			import net.fproject.tester.business.Connector;
-			import net.fproject.tester.business.RecoveryResponder;
-			import net.fproject.tester.controller.EventHub;
-			import net.fproject.tester.events.StatusChangeEvent;
-			import net.fproject.tester.model.RemoteMethod;
-			import net.fproject.tester.model.RemoteService;
-			import net.fproject.tester.model.ServiceInfo;
+			import net.fproject.robot.business.Connector;
+			import net.fproject.robot.business.RecoveryResponder;
+			import net.fproject.robot.controller.EventHub;
+			import net.fproject.robot.events.StatusChangeEvent;
+			import net.fproject.robot.model.RemoteMethod;
+			import net.fproject.robot.model.RemoteService;
+			import net.fproject.robot.model.ServiceInfo;
 			
 			[Bindable]
 			public var activeService:RemoteService;

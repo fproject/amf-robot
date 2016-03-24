@@ -16,15 +16,21 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.business
+package net.fproject.robot.events
 {
-	import mx.rpc.Responder;
+	import flash.events.Event;
 
-	public class RecoveryResponder extends Responder
+	public class StatusChangeEvent extends Event
 	{
-		public function RecoveryResponder(result:Function, fault:Function)
+		public static const CONNECTING:String 	= "connecting";
+		public static const CONNECTED:String	= "connected";
+		public static const DISCONNECTED:String	= "disconnected";
+		public static const QUIT:String			= "quit";
+		public static const RESET:String		= "reset";
+		
+		public function StatusChangeEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
-			super(result, fault);
+			super(type, bubbles, cancelable);
 		}
 		
 	}

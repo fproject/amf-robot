@@ -16,47 +16,34 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.model
+package net.fproject.robot.controller
 {
-	import mx.collections.ArrayCollection;
-
-	[RemoteClass(alias="RService")]
-	public class RemoteService extends RemoteItemBase
+	import flash.events.EventDispatcher;
+	
+	public class EventHub extends EventDispatcher
 	{
-		[Bindable]
-		public var methods:ArrayCollection;
+		private static var _allowInstance:Boolean = false;
+		private static var _instance:EventHub;
 		
-		public function RemoteService( n:String='new')
+		public function EventHub()
 		{
-			name = n;
-			methods = new ArrayCollection();
-		}
-		
-		public function getPackageName():String
-		{
-			var p:Array = name.split('.');
-			p.pop();
-			return p.join('.');	
-		}
-		
-		public function getServiceName():String
-		{
-			var p:Array = name.split('.');
-			return p.pop();	
-		}
-		
-		public function getAMFPackageName():String
-		{
-			var p:Array = name.split('.');
-			p.pop();
-			var pn:String = p.join('/');
-			if( pn == '' )
+			if( !EventHub._allowInstance )
 			{
-				return '';
-			} else {
-				return pn+'/';
+				throw new Error();
 			}
+			
+			EventHub._allowInstance = false;
 		}
-
+		
+		public static function getInstance():EventHub
+		{
+			if( !EventHub._instance )
+			{
+				EventHub._allowInstance = true;
+				EventHub._instance = new EventHub();
+			}
+			
+			return EventHub._instance;
+		}
 	}
 }

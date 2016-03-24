@@ -44,7 +44,7 @@ limitations under the License.
 			<s:ArrayList>
 				<s:GridColumn headerText="Methods" dataField="name" dataTipFunction="{methodToDataTip}"/>
 				<s:GridColumn headerText="Return Type" dataField="returnType" dataTipFunction="{methodToDataTip}"/>
-				<s:GridColumn headerText="" editable="false" itemRenderer="net.fproject.tester.view.ShowASDocButton"
+				<s:GridColumn headerText="" editable="false" itemRenderer="net.fproject.robot.view.ShowASDocButton"
 							  id="docButtonColumn" dataTipFunction="{methodToDataTip}"
 							  width="25"/>
 			</s:ArrayList>
@@ -61,7 +61,7 @@ limitations under the License.
 							<s:ComboBoxGridItemEditor dataProvider="{RemoteArgument.allTypes}">
 								<fx:Script>
 									<![CDATA[
-										import net.fproject.tester.model.RemoteArgument;
+										import net.fproject.robot.model.RemoteArgument;
 									]]>
 								</fx:Script>
 							</s:ComboBoxGridItemEditor>
@@ -106,13 +106,13 @@ limitations under the License.
 			import mx.events.ListEvent;
 			import mx.managers.PopUpManager;
 			
-			import net.fproject.tester.controller.EventHub;
-			import net.fproject.tester.events.ProfileModifiedEvent;
-			import net.fproject.tester.events.StatusChangeEvent;
-			import net.fproject.tester.model.RemoteArgument;
-			import net.fproject.tester.model.RemoteMethod;
-			import net.fproject.tester.model.RemoteService;
-			import net.fproject.tester.model.ServiceInfo;
+			import net.fproject.robot.controller.EventHub;
+			import net.fproject.robot.events.ProfileModifiedEvent;
+			import net.fproject.robot.events.StatusChangeEvent;
+			import net.fproject.robot.model.RemoteArgument;
+			import net.fproject.robot.model.RemoteMethod;
+			import net.fproject.robot.model.RemoteService;
+			import net.fproject.robot.model.ServiceInfo;
 			
 			[Bindable]
 			private var serviceInfo:ServiceInfo = ServiceInfo.getInstance();

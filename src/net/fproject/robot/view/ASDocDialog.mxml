@@ -9,7 +9,7 @@
 			import mx.events.CloseEvent;
 			import mx.managers.PopUpManager;
 			
-			import net.fproject.tester.model.RemoteMethod;
+			import net.fproject.robot.model.RemoteMethod;
 			
 			[Bindable]
 			public var method:RemoteMethod;

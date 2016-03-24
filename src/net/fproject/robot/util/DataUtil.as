@@ -16,7 +16,7 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.util
+package net.fproject.robot.util
 {
 	import flash.utils.getQualifiedClassName;
 	

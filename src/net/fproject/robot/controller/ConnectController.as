@@ -16,7 +16,7 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.controller
+package net.fproject.robot.controller
 {
 	import com.adobe.air.preferences.Preference;
 	
@@ -27,10 +27,10 @@ package net.fproject.tester.controller
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	
-	import net.fproject.tester.business.Connector;
-	import net.fproject.tester.events.ProfileModifiedEvent;
-	import net.fproject.tester.model.Profile;
-	import net.fproject.tester.model.ServiceInfo;
+	import net.fproject.robot.business.Connector;
+	import net.fproject.robot.events.ProfileModifiedEvent;
+	import net.fproject.robot.model.Profile;
+	import net.fproject.robot.model.ServiceInfo;
 
 	public class ConnectController
 	{

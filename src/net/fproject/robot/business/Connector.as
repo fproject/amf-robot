@@ -16,7 +16,7 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.business
+package net.fproject.robot.business
 {
 	import mx.controls.Alert;
 	import mx.rpc.AbstractOperation;
@@ -24,15 +24,15 @@ package net.fproject.tester.business
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.mxml.RemoteObject;
 	
-	import net.fproject.tester.controller.EventHub;
-	import net.fproject.tester.events.LogEvent;
-	import net.fproject.tester.events.StatusChangeEvent;
-	import net.fproject.tester.model.Profile;
-	import net.fproject.tester.model.RemoteArgument;
-	import net.fproject.tester.model.RemoteMethod;
-	import net.fproject.tester.model.RemoteService;
-	import net.fproject.tester.model.ServiceInfo;
-	import net.fproject.tester.util.DataUtil;
+	import net.fproject.robot.controller.EventHub;
+	import net.fproject.robot.events.LogEvent;
+	import net.fproject.robot.events.StatusChangeEvent;
+	import net.fproject.robot.model.Profile;
+	import net.fproject.robot.model.RemoteArgument;
+	import net.fproject.robot.model.RemoteMethod;
+	import net.fproject.robot.model.RemoteService;
+	import net.fproject.robot.model.ServiceInfo;
+	import net.fproject.robot.util.DataUtil;
 	
 	public class Connector
 	{

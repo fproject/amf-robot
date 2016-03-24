@@ -2,7 +2,7 @@
 <s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
-					   xmlns:view="net.fproject.tester.view.*" 
+					   xmlns:view="net.fproject.robot.view.*" 
 					   creationComplete="init()" 
 					   currentState="Connect" minHeight="760" minWidth="1200">
 	
@@ -72,12 +72,12 @@
 			import air.update.ApplicationUpdaterUI;
 			import air.update.events.UpdateEvent;
 			
-			import net.fproject.tester.controller.ConnectController;
-			import net.fproject.tester.controller.EventHub;
-			import net.fproject.tester.events.StatusChangeEvent;
-			import net.fproject.tester.model.RemoteMethod;
-			import net.fproject.tester.model.ServiceInfo;
-			import net.fproject.tester.view.XDebugSettingWindow;
+			import net.fproject.robot.controller.ConnectController;
+			import net.fproject.robot.controller.EventHub;
+			import net.fproject.robot.events.StatusChangeEvent;
+			import net.fproject.robot.model.RemoteMethod;
+			import net.fproject.robot.model.ServiceInfo;
+			import net.fproject.robot.view.XDebugSettingWindow;
 			
 			[Bindable]
 			private var serviceInfo:ServiceInfo;

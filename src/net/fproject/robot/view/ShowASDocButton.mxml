@@ -5,7 +5,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import net.fproject.tester.model.RemoteMethod;
+			import net.fproject.robot.model.RemoteMethod;
 			protected function showAsDocButton_clickHandler(event:MouseEvent):void
 			{
 				var method:RemoteMethod = this.data as RemoteMethod;

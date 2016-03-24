@@ -16,34 +16,24 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.controller
+package net.fproject.robot.events
 {
-	import flash.events.EventDispatcher;
+	import flash.events.Event;
 	
-	public class EventHub extends EventDispatcher
+	public class LogEvent extends Event
 	{
-		private static var _allowInstance:Boolean = false;
-		private static var _instance:EventHub;
-		
-		public function EventHub()
+		public static const LOG:String = "log";
+		private var _message:String;
+
+		public function get message():String
 		{
-			if( !EventHub._allowInstance )
-			{
-				throw new Error();
-			}
-			
-			EventHub._allowInstance = false;
+			return _message;
 		}
 		
-		public static function getInstance():EventHub
+		public function LogEvent(type:String, message:String)
 		{
-			if( !EventHub._instance )
-			{
-				EventHub._allowInstance = true;
-				EventHub._instance = new EventHub();
-			}
-			
-			return EventHub._instance;
+			super(type);
+			_message = message;
 		}
 	}
 }

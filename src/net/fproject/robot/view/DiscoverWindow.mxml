@@ -43,7 +43,7 @@ limitations under the License.
 	
 	<fx:Script>
 		<![CDATA[
-			import net.fproject.tester.business.Connector;
+			import net.fproject.robot.business.Connector;
 			import mx.managers.PopUpManager;
 			
 			private var con:Connector = Connector.getInstance();

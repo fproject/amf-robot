@@ -16,13 +16,13 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.model
+package net.fproject.robot.model
 {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.controls.Alert;
 	
-	import net.fproject.tester.util.DataUtil;
+	import net.fproject.robot.util.DataUtil;
 	
 	[RemoteClass(alias="RArgument")]
 	public class RemoteArgument extends RemoteItemBase

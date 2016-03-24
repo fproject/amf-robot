@@ -16,17 +16,15 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.events
+package net.fproject.robot.business
 {
-	import flash.events.Event;
+	import mx.rpc.Responder;
 
-	public class ProfileModifiedEvent extends Event
+	public class RecoveryResponder extends Responder
 	{
-		public static const CHANGED:String = "changed";
-		
-		public function ProfileModifiedEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function RecoveryResponder(result:Function, fault:Function)
 		{
-			super(type, bubbles, cancelable);
+			super(result, fault);
 		}
 		
 	}

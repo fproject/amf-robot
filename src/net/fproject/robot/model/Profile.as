@@ -16,22 +16,47 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package net.fproject.tester.events
+package net.fproject.robot.model
 {
-	import flash.events.Event;
-
-	public class StatusChangeEvent extends Event
+	import mx.collections.ArrayCollection;
+	
+	[RemoteClass(alias="Profile")]
+	public class Profile
 	{
-		public static const CONNECTING:String 	= "connecting";
-		public static const CONNECTED:String	= "connected";
-		public static const DISCONNECTED:String	= "disconnected";
-		public static const QUIT:String			= "quit";
-		public static const RESET:String		= "reset";
+		[Bindable]
+		public var xdebugSessionId:String;
 		
-		public function StatusChangeEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+		[Bindable]
+		public var name:String = "new";
+		[Bindable]
+		public var url:String = "http://localhost/";
+		[Bindable]
+		public var useCredentials:Boolean = false;
+		[Bindable]
+		public var user:String = "admin";
+		[Bindable]
+		public var password:String;
+		[Bindable]
+		public var serviceDest:String = 'amfphp';
+		[Bindable]
+		public var services:ArrayCollection;
+		
+		public function Profile()
 		{
-			super(type, bubbles, cancelable);
+			services = new ArrayCollection();
 		}
 		
+		public function getServiceByName( name:String ):RemoteService
+		{
+
+			for each( var s:RemoteService in services )
+			{
+				if( s.name == name )
+				{
+					return s;
+				}
+			}
+			return null;
+		}
 	}
 }
