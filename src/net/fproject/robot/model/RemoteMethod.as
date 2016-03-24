@@ -145,6 +145,7 @@ package net.fproject.robot.model
 			dispatchChangeEvent("asDoc", null, this.asDoc);
 		}
 		
+		[Bindable("propertyChange")]
 		public function get asDoc():String
 		{
 			var s:String = "Method: " + this.name + "\n\n" +
