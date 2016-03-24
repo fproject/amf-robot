@@ -96,7 +96,7 @@
 				<ns:li>4. Back to <ns:span fontStyle="italic">Run/Debug Configuration</ns:span> window, in the
 					<ns:span fontStyle="italic">Ide key (session id)</ns:span> section, paste the value that you entered above</ns:li>
 				<ns:li>5. Open menu <ns:span fontStyle="italic">Run &#8212; Debug</ns:span> and choose your newly created configuration.</ns:li>
-				<ns:li>6. Done. Now you can use F-Project Tester to test any remote service method.</ns:li>
+				<ns:li>6. Done. Now you can use AMF Robot to test any remote service method.</ns:li>
 			</ns:list>
 		</s:RichText>
 	</s:Form>

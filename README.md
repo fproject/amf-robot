@@ -1,5 +1,5 @@
-# F-Project Tester
-A tool based on [dunamis/pinta] with many new features for testing AMF Server and RESTful Webservices
+# AMF Robot
+A powerful tool for automation testing AMF Server and RESTful Webservices
 
 ## Installation
 

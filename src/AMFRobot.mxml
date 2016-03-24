@@ -36,7 +36,7 @@
 				  id="xdebugSetting" click="xdebugSetting_clickHandler(event)"/>
 	</s:BorderContainer>
 	
-	<s:Label text="F-Project Tester version " x="700" y="30" color="#0026FF" fontSize="18" id="versionLabel"/>
+	<s:Label text="AMF Robot version " x="700" y="30" color="#0026FF" fontSize="18" id="versionLabel"/>
 	
 	<view:ServicesPanel left="10" top="73" styleName="lightTitle" id="serviceInfoLabel" 
 						minWidth="817" minHeight="273" title="Services and Methods" 
@@ -102,7 +102,7 @@
 			
 			private function checkForUpdate():void {
 				setApplicationVersion(); // Find the current version so we can show it below
-				appUpdater.updateURL = "http://fproject.net/amf-tester/update.xml"; // Server-side XML file describing update
+				appUpdater.updateURL = "http://fproject.net/amf-robot/update.xml"; // Server-side XML file describing update
 				appUpdater.isCheckForUpdateVisible = false; // We won't ask permission to check for an update
 				appUpdater.addEventListener(UpdateEvent.INITIALIZED, onUpdate); // Once initialized, run onUpdate
 				appUpdater.addEventListener(ErrorEvent.ERROR, onError); // If something goes wrong, run onError
@@ -121,7 +121,7 @@
 			private function setApplicationVersion():void {
 				var appXML:XML = NativeApplication.nativeApplication.applicationDescriptor;
 				var ns:Namespace = appXML.namespace();
-				versionLabel.text = "F-Project Tester " + appXML.ns::versionNumber;
+				versionLabel.text = "AMF Robot " + appXML.ns::versionNumber;
 			}
 			
 			private function onQuit(event:StatusChangeEvent):void

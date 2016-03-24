@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services-config>
     <services>
-        <service id="amf-tester-service" class="flex.messaging.services.RemotingService" messageTypes="flex.messaging.messages.RemotingMessage">
-            <destination id="amf-tester-dst">
+        <service id="amf-robot-service" class="flex.messaging.services.RemotingService" messageTypes="flex.messaging.messages.RemotingMessage">
+            <destination id="amf-robot-dst">
                 <channels>
                     <channel ref="my-remote"/>
                 </channels>
