@@ -21,7 +21,8 @@ limitations under the License.
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 creationComplete="init()" title="Services and Methods"
-		 skinClass="net.fproject.robot.view.skin.ServiceAndModelPanelSkin">
+		 skinClass="net.fproject.robot.view.skin.ServiceAndModelPanelSkin"
+		 xmlns:as3syntaxhighlight="net.fproject.as3syntaxhighlight.*">
 	<s:states>
 		<s:State name="serviceMode" />
 		<s:State name="modelMode" />
@@ -64,10 +65,10 @@ limitations under the License.
 				<s:GridColumn headerText="Type" dataField="type">
 					<s:itemEditor>
 						<fx:Component>
-							<s:ComboBoxGridItemEditor dataProvider="{RemoteArgument.allTypes}">
+							<s:ComboBoxGridItemEditor dataProvider="{RemoteVariable.allTypes}">
 								<fx:Script>
 									<![CDATA[
-										import net.fproject.robot.model.RemoteArgument;
+										import net.fproject.robot.model.RemoteVariable;
 									]]>
 								</fx:Script>
 							</s:ComboBoxGridItemEditor>
@@ -109,53 +110,58 @@ limitations under the License.
 			  enabled="{argumentsGrid.selectedIndex>=0}" click="onArgumentDelete(event)"
 			  includeIn="serviceMode"/>
 	
+	<s:List height="180" width="250" left="5" top="5" bottom="5" includeIn="modelMode"
+				id="modelList" verticalScrollPolicy="auto"
+				dataProvider="{serviceInfo.activeProfile.models}" labelField="name"/>
+	<as3syntaxhighlight:AS3CodeViewer left="260" top="5" bottom="5" right="5" focusEnabled="false" includeIn="modelMode"/>
+									  
 	<fx:Script>
 		<![CDATA[
-			import mx.events.MenuEvent;
-			import mx.controls.Menu;
-			import mx.core.FlexGlobals;
-			import spark.events.GridItemEditorEvent;
-			import spark.events.GridEvent;
-			import mx.core.IFlexDisplayObject;
-			import mx.events.FlexEvent;
-			import mx.events.ListEvent;
-			import mx.managers.PopUpManager;
-			
-			import net.fproject.robot.controller.EventHub;
-			import net.fproject.robot.events.ProfileModifiedEvent;
-			import net.fproject.robot.events.StatusChangeEvent;
-			import net.fproject.robot.model.RemoteArgument;
-			import net.fproject.robot.model.RemoteMethod;
-			import net.fproject.robot.model.RemoteService;
-			import net.fproject.robot.model.ServiceInfo;
-			
-			[Bindable]
-			private var serviceInfo:ServiceInfo = ServiceInfo.getInstance();
-			private var eventHub:EventHub = EventHub.getInstance();
-			
-			[Bindable]
-			public var activeService:RemoteService;
-			[Bindable]
-			public var activeMethod:RemoteMethod;
-			
-			private var discoverPopup:IFlexDisplayObject;
-			
-			private var dropdownMenu:Menu;
-			
-			private function init():void
-			{
-				eventHub.addEventListener(StatusChangeEvent.RESET, onReset);
-				eventHub.addEventListener(StatusChangeEvent.CONNECTING, onConnecting);
-				dropDownButton.addEventListener(MouseEvent.CLICK, onDropDownClick);
-				var dp:XML = 
-					<root>
-						<menuitem id="services" label="Services and Methods" type="radio" groupName="g" toggled="true"/>
-						<menuitem id="models" label="Models" type="radio" groupName="g"/>
-					</root>;
-				dropdownMenu = Menu.createMenu(this, dp, false);
-				dropdownMenu.labelField="@label";
-				dropdownMenu.addEventListener(MenuEvent.ITEM_CLICK, menuHandler);
-			}
+				import mx.events.MenuEvent;
+				import mx.controls.Menu;
+				import mx.core.FlexGlobals;
+				import spark.events.GridItemEditorEvent;
+				import spark.events.GridEvent;
+				import mx.core.IFlexDisplayObject;
+				import mx.events.FlexEvent;
+				import mx.events.ListEvent;
+				import mx.managers.PopUpManager;
+				
+				import net.fproject.robot.controller.EventHub;
+				import net.fproject.robot.events.ProfileModifiedEvent;
+				import net.fproject.robot.events.StatusChangeEvent;
+				import net.fproject.robot.model.RemoteVariable;
+				import net.fproject.robot.model.RemoteMethod;
+				import net.fproject.robot.model.RemoteService;
+				import net.fproject.robot.model.ServiceInfo;
+				
+				[Bindable]
+				private var serviceInfo:ServiceInfo = ServiceInfo.getInstance();
+				private var eventHub:EventHub = EventHub.getInstance();
+				
+				[Bindable]
+				public var activeService:RemoteService;
+				[Bindable]
+				public var activeMethod:RemoteMethod;
+				
+				private var discoverPopup:IFlexDisplayObject;
+				
+				private var dropdownMenu:Menu;
+				
+				private function init():void
+				{
+					eventHub.addEventListener(StatusChangeEvent.RESET, onReset);
+					eventHub.addEventListener(StatusChangeEvent.CONNECTING, onConnecting);
+					dropDownButton.addEventListener(MouseEvent.CLICK, onDropDownClick);
+					var dp:XML = 
+						<root>
+							<menuitem id="services" label="Services and Methods" type="radio" groupName="g" toggled="true"/>
+							<menuitem id="models" label="Models" type="radio" groupName="g"/>
+						</root>;
+					dropdownMenu = Menu.createMenu(this, dp, false);
+					dropdownMenu.labelField="@label";
+					dropdownMenu.addEventListener(MenuEvent.ITEM_CLICK, menuHandler);
+				}
 			
 			// Event handler for the Menu control's change event.
 			private function menuHandler(evt:MenuEvent):void
@@ -255,7 +261,7 @@ limitations under the License.
 			
 			private function onArgumentAdd(event:MouseEvent):void
 			{
-				activeMethod.arguments.addItem(new RemoteArgument());
+				activeMethod.arguments.addItem(new RemoteVariable());
 			}
 			
 			private function onArgumentDelete(event:MouseEvent):void

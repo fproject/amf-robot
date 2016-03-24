@@ -45,10 +45,10 @@ package net.fproject.robot.controller
 		public function ConnectController()
 		{
 			loadProfiles();
-			eventHub.addEventListener( ProfileModifiedEvent.CHANGED, onProfileModified );
+			eventHub.addEventListener(ProfileModifiedEvent.CHANGED, onProfileModified);
 		}
 		
-		private function onProfileModified( event:ProfileModifiedEvent ):void
+		private function onProfileModified(event:ProfileModifiedEvent):void
 		{
 			saveProfiles();
 		}
@@ -58,16 +58,16 @@ package net.fproject.robot.controller
 			if(prefsFile == null)
 				prefsFile = File.applicationStorageDirectory.resolvePath(fileName);
 			var fs:FileStream = new FileStream();
-			if( !prefsFile.exists )
+			if(!prefsFile.exists)
 			{
 				profiles = new ArrayCollection();
 			} else {
 				try {
-					fs.open( prefsFile, FileMode.READ );
+					fs.open(prefsFile, FileMode.READ);
 					profiles = fs.readObject() as ArrayCollection;
 					fs.close();
-				} catch( e:Error ) {
-					Alert.show( "Error while loading profiles: "+e.message, "Load error");
+				} catch(e:Error) {
+					Alert.show("Error while loading profiles: "+e.message, "Load error");
 				}
 			}
 		}
@@ -78,30 +78,30 @@ package net.fproject.robot.controller
 				prefsFile = File.applicationStorageDirectory.resolvePath(fileName);		
 			var fs:FileStream = new FileStream();
 			try {
-				fs.open( prefsFile, FileMode.WRITE );
+				fs.open(prefsFile, FileMode.WRITE);
 				fs.writeObject(profiles);
 				fs.close();
-			} catch( e:Error ) {
+			} catch(e:Error) {
 				Alert.show("Failed to save profiles: "+e.message, "Save error");
 			}
 		}
 		
-		public function deleteProfile( index:int):void
+		public function deleteProfile(index:int):void
 		{
-			profiles.removeItemAt( index );	
+			profiles.removeItemAt(index);	
 		}
 		
 		public function addProfile():void
 		{
 			var profile:Profile = new Profile();
-			profiles.addItem( profile );
+			profiles.addItem(profile);
 		}
 		
-		public function connect( p:Profile ):void
+		public function connect(p:Profile):void
 		{
 			serviceInfo.activeProfile = p;
 			var connector:Connector = Connector.getInstance();
-			connector.connect( p );
+			connector.connect(p);
 		}
 
 		private static var _instance:ConnectController;

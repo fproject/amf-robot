@@ -48,10 +48,10 @@ limitations under the License.
 									   editorDataField="selectedItem" headerText="Type">
 						<mx:itemEditor>
 							<fx:Component>
-								<mx:ComboBox dataProvider="{RemoteArgument.allTypes}">
+								<mx:ComboBox dataProvider="{RemoteVariable.allTypes}">
 									<fx:Script>
 										<![CDATA[
-											import net.fproject.robot.model.RemoteArgument;
+											import net.fproject.robot.model.RemoteVariable;
 										]]>
 									</fx:Script>
 								</mx:ComboBox>

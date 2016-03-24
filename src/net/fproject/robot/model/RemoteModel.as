@@ -19,59 +19,44 @@
 package net.fproject.robot.model
 {
 	import mx.collections.ArrayCollection;
-	
-	[RemoteClass(alias="Profile")]
-	public class Profile
+
+	[RemoteClass(alias="RModel")]
+	public class RemoteModel extends RemoteItemBase
 	{
 		[Bindable]
-		public var xdebugSessionId:String;
+		public var properties:ArrayCollection;
 		
-		[Bindable]
-		public var name:String = "new";
-		[Bindable]
-		public var url:String = "http://localhost/";
-		[Bindable]
-		public var useCredentials:Boolean = false;
-		[Bindable]
-		public var user:String = "admin";
-		[Bindable]
-		public var password:String;
-		[Bindable]
-		public var serviceDest:String = 'amfphp';
-		[Bindable]
-		public var services:ArrayCollection;
-		
-		[Bindable]
-		public var models:ArrayCollection;
-		
-		public function Profile()
+		public function RemoteModel(n:String='new')
 		{
-			services = new ArrayCollection;
-			models = new ArrayCollection;
+			name = n;
+			properties = new ArrayCollection;
 		}
 		
-		public function getServiceByName(name:String):RemoteService
+		public function getPackageName():String
 		{
-			for each(var s:RemoteService in services)
+			var p:Array = name.split('.');
+			p.pop();
+			return p.join('.');	
+		}
+		
+		public function getModelName():String
+		{
+			var p:Array = name.split('.');
+			return p.pop();	
+		}
+		
+		public function getAMFPackageName():String
+		{
+			var p:Array = name.split('.');
+			p.pop();
+			var pn:String = p.join('/');
+			if( pn == '' )
 			{
-				if(s.name == name)
-				{
-					return s;
-				}
+				return '';
+			} else {
+				return pn+'/';
 			}
-			return null;
 		}
-		
-		public function getModelByName(name:String):RemoteModel
-		{
-			for each(var m:RemoteModel in models)
-			{
-				if(m.name == name)
-				{
-					return m;
-				}
-			}
-			return null;
-		}
+
 	}
 }

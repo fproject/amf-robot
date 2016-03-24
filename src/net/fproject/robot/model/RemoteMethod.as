@@ -94,7 +94,7 @@ package net.fproject.robot.model
 				
 			} while(true);
 			
-			for each(var ra:RemoteArgument in this.arguments)
+			for each(var ra:RemoteVariable in this.arguments)
 			{
 				if(params.hasOwnProperty(ra.name))
 					ra.doc = params[ra.name].doc;
@@ -150,7 +150,7 @@ package net.fproject.robot.model
 		{
 			var s:String = "Method: " + this.name + "\n\n" +
 				this.getASDocBody() + "\n";
-			for each (var ra:RemoteArgument in this.arguments)
+			for each (var ra:RemoteVariable in this.arguments)
 			{
 				s = s + "\n@param " + ra.name + " " + ra.doc;
 			}

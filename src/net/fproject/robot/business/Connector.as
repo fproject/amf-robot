@@ -27,9 +27,10 @@ package net.fproject.robot.business
 	import net.fproject.robot.events.LogEvent;
 	import net.fproject.robot.events.StatusChangeEvent;
 	import net.fproject.robot.model.Profile;
-	import net.fproject.robot.model.RemoteArgument;
 	import net.fproject.robot.model.RemoteMethod;
+	import net.fproject.robot.model.RemoteModel;
 	import net.fproject.robot.model.RemoteService;
+	import net.fproject.robot.model.RemoteVariable;
 	import net.fproject.robot.model.ServiceInfo;
 	import net.fproject.robot.util.DataUtil;
 	
@@ -88,7 +89,7 @@ package net.fproject.robot.business
 
 			// set arguments
 			var args:Array = new Array();
-			for each(var arg:RemoteArgument in method.arguments) 
+			for each(var arg:RemoteVariable in method.arguments) 
 			{
 				args.push(arg.remoteValue);	
 			}
@@ -101,6 +102,7 @@ package net.fproject.robot.business
 		public function discover(format:String, serviceName:String, methodName:String):void
 		{
 			serviceInfo.activeProfile.services.removeAll();
+			serviceInfo.activeProfile.models.removeAll();
 			eventHub.dispatchEvent(new StatusChangeEvent(StatusChangeEvent.RESET));
 			proxy.source = serviceName;
 			if(format == Connector.FMT_PHP_AMF)
@@ -138,13 +140,32 @@ package net.fproject.robot.business
 							eventHub.dispatchEvent(new LogEvent(LogEvent.LOG, 
 								"[WARN]Empty parameter type:\r\nService: " + service.name + ", Method: " + method.name
 								+ ", Parameter: " + arg.name));
-						method.arguments.addItem(new RemoteArgument(arg.name, DataUtil.parseRemoteType(arg.type))); 
+						method.arguments.addItem(new RemoteVariable(arg.name, DataUtil.parseRemoteType(arg.type))); 
 					}
 					method.populateASDocs();
 					service.methods.addItem(method);
 				}
 				
 				serviceInfo.activeProfile.services.addItem(service);
+			}
+			
+			var modelObjects:Array = event.result["models"];
+			
+			for each(var modelObj:Object in modelObjects)
+			{				
+				// Create service
+				var model:RemoteModel = new RemoteModel(modelObj.name as String);
+				model.doc = modelObj.comment;
+				for each(var propObj:Object in modelObj.properties)
+				{
+					var prop:RemoteVariable = new RemoteVariable(propObj.name as String);
+					prop.doc = propObj.comment;
+					prop.type = DataUtil.parseRemoteType(propObj.type);
+					
+					model.properties.addItem(method);
+				}
+				
+				serviceInfo.activeProfile.models.addItem(model);
 			}
 		}
 		

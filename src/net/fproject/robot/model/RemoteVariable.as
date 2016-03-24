@@ -24,8 +24,8 @@ package net.fproject.robot.model
 	
 	import net.fproject.robot.util.DataUtil;
 	
-	[RemoteClass(alias="RArgument")]
-	public class RemoteArgument extends RemoteItemBase
+	[RemoteClass(alias="RVariable")]
+	public class RemoteVariable extends RemoteItemBase
 	{
 		[Bindable]
 		public var type:String;
@@ -70,7 +70,7 @@ package net.fproject.robot.model
 		}
 		
 		
-		public function RemoteArgument(name:String='new', type:String=TYPE_STRING, value:String='')
+		public function RemoteVariable(name:String='new', type:String=TYPE_STRING, value:String='')
 		{
 			this.name = name;
 			this.value = value;
