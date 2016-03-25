@@ -12,6 +12,6 @@ The minimum requirement by F-Project:
 
 ##Links
 
-- [GitHub](https://github.com/fproject/f-project)
+- [F-Project GitHub](https://github.com/fproject/f-project)
 - [F-Project Wiki](http://wiki.f-project.net)
-- [GitHub](https://github.com/fproject/fprj-test)
+- [AMF Robot GitHub](https://github.com/fproject/amf-robot)
