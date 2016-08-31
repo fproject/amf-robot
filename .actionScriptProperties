@@ -25,7 +25,7 @@
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
   <buildTargets>
     <buildTarget buildTargetName="default" platformId="default">
-      <airSettings airCertificatePath="F:/GitRepo/pkteam/projectkit-team/cert/ProjectKitCert_Android.p12" airTimestamp="true" anePathSet="true" version="1">
+      <airSettings airCertificatePath="F:/GitRepo/amf-robot/cert.p12" airTimestamp="true" anePathSet="true" version="1">
         <airExcludes/>
         <anePaths/>
         <newLaunchParams/>
