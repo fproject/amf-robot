@@ -33,6 +33,7 @@ package net.fproject.robot.business
 	import net.fproject.robot.model.RemoteVariable;
 	import net.fproject.robot.model.ServiceInfo;
 	import net.fproject.robot.util.DataUtil;
+	import net.fproject.utils.StringUtil;
 	
 	public class Connector
 	{
@@ -67,7 +68,7 @@ package net.fproject.robot.business
 			
 			proxy = new RemoteObject();
 			proxy.endpoint = DataUtil.isBlank(profile.xdebugSessionId) ? profile.url : profile.url + "&XDEBUG_SESSION_START=" + profile.xdebugSessionId;
-			proxy.destination = profile.serviceDest;
+			proxy.destination = StringUtil.isBlank(profile.serviceDest) ? "<unknown destination>" : profile.serviceDest;
 			
 			if(profile.useCredentials)
 				proxy.setCredentials(profile.user, profile.password);

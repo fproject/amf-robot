@@ -37,7 +37,7 @@ package net.fproject.robot.model
 		[Bindable]
 		public var password:String;
 		[Bindable]
-		public var serviceDest:String = 'amfphp';
+		public var serviceDest:String;
 		[Bindable]
 		public var services:ArrayCollection;
 		
